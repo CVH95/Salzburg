@@ -4,10 +4,10 @@
 
 ```
 $ cd ~/catkin_ws/src/
-$ git clone https://github.com/CVEarp/ROVI2_Object_Avoidance/settings/collaboration
+$ git clone https://github.com/CVEarp/ROVI2_Object_Avoidance.git
 ```
 
-To build ROS packages (in $ROVI2\_Object\_Avoidance/ROS\_pkgs/)
+To build ROS packages (in ROVI2\_Object\_Avoidance/ROS\_pkgs/)
 
 ```
 $ catkin_make

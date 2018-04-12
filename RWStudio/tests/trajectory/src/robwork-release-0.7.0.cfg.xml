@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PropertyMap>
+ <Property>
+  <Name>plugins</Name>
+  <Description>List of plugins or plugin locations</Description>
+  <Value>
+   <PropertyMap>
+    <Property>
+     <Name>location-1</Name>
+     <Description>Default plugin location</Description>
+     <Value>
+      <String>plugins/</String>
+     </Value>
+    </Property>
+    <Property>
+     <Name>location-2</Name>
+     <Description>Default plugin location for RobWork</Description>
+     <Value>
+      <String>/home/charlie/RobWork/RobWork//libs/release/</String>
+     </Value>
+    </Property>
+    <Property>
+     <Name>location-3</Name>
+     <Description>Default plugin location for RobWorkStudio</Description>
+     <Value>
+      <String>/home/charlie/RobWork/RobWorkStudio//libs/release/</String>
+     </Value>
+    </Property>
+    <Property>
+     <Name>location-4</Name>
+     <Description>Default plugin location for RobWorkSim</Description>
+     <Value>
+      <String>/home/charlie/RobWork/RobWorkSim//libs/release/</String>
+     </Value>
+    </Property>
+    <Property>
+     <Name>location-5</Name>
+     <Description>Default plugin location for RobWorkHardware</Description>
+     <Value>
+      <String>/home/charlie/RobWork/RobWorkHardware//libs/release/</String>
+     </Value>
+    </Property>
+   </PropertyMap>
+  </Value>
+ </Property>
+</PropertyMap>
