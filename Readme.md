@@ -1,5 +1,20 @@
 # ROVI 2 Final Project: OBJECT AVOIDANCE
 
+## Download repo
+
+```
+$ cd ~/catkin_ws/src/
+$ git clone https://github.com/CVEarp/ROVI2_Object_Avoidance/settings/collaboration
+```
+
+To build ROS packages (in $ROVI2\_Object\_Avoidance/ROS\_pkgs/)
+
+```
+$ catkin_make
+```
+
+RWStudio & Non-ROS programs have to b build individualy.
+
 ## Robot connection setup:
 
 ```
