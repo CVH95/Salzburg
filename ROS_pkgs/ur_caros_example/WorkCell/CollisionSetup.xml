@@ -1,0 +1,9 @@
+
+<CollisionSetup>
+    <Exclude>
+	<FramePair first="Env" second="Foot"/>
+    <FramePair first="Foot" second="UR.Base"/>
+    <FramePair first="Env" second="Ground"/>
+    <FramePair first="Foot" second="Ground"/>
+    </Exclude>
+</CollisionSetup>

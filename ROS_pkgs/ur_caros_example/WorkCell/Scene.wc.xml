@@ -1,0 +1,23 @@
+<WorkCell name="SceneUR">
+
+<Frame name="Foot" refframe="WORLD">
+	<RPY> 0 0 0 </RPY> <Pos> 0 0 0 </Pos>
+	<Drawable name="EnvGeo" refframe="Env">
+		<Polytope file="Geometry/foot" />
+	</Drawable>
+</Frame>
+
+<Frame name="Robot" refframe="Foot">
+    <RPY> -90 0 0 </RPY> <Pos>0 0.0 0.780</Pos>
+</Frame>
+<Include file="UR/UR.wc.xml" />
+
+<Frame name="Ground" refframe="Robot">
+	<RPY> 0 0 0 </RPY> <Pos>1.3 -1  -0.1</Pos>
+	<Drawable name="Groundgeo" refframe="Env" >
+	<RPY> 0 0 90 </RPY> <Pos>-0.4 0 0</Pos>
+	<Polytope file="Geometry/ground_obs" />
+</Drawable>
+</Frame>
+
+</WorkCell>
