@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "URRobot");
 	URRobot robot;
-	const string file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/cleanPath.txt";
+	const string file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/genfiles/trajectory.txt";
 	
 
 	cout << "OPENING WORKCELL 2" << endl;
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 	cout << endl;
 	
 	
-	ifstream inf("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/cleanPath.txt");
+	ifstream inf("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/genfiles/trajectory.txt");
 	string lines;
 	int nl = 0;
 
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 
 
 	// Transfering joint values.
-	ifstream fs("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/cleanPath.txt");
+	ifstream fs("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/genfiles/trajectory.txt");
 	float val;
 	vector<float> values;
 	

@@ -48,24 +48,13 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src
+CMAKE_SOURCE_DIR = /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src
+CMAKE_BINARY_DIR = /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,11 +67,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/CMakeFiles /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named planning
+# Target rules for targets named motion
 
 # Build rule for target.
-planning: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 planning
-.PHONY : planning
+motion: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 motion
+.PHONY : motion
 
 # fast build rule for target.
-planning/fast:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/build
-.PHONY : planning/fast
+motion/fast:
+	$(MAKE) -f CMakeFiles/motion.dir/build.make CMakeFiles/motion.dir/build
+.PHONY : motion/fast
 
 main.o: main.cpp.o
 
@@ -129,7 +129,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/motion.dir/build.make CMakeFiles/motion.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -138,7 +138,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/motion.dir/build.make CMakeFiles/motion.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -147,7 +147,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/motion.dir/build.make CMakeFiles/motion.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -156,9 +156,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... planning"
+	@echo "... rebuild_cache"
+	@echo "... motion"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

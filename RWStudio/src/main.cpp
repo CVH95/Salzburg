@@ -203,7 +203,7 @@ int main(int argc, char** argv)
 	QMetric::Ptr metric = MetricFactory::makeEuclidean<Q>();
 
 	// Set initial epsilon
-	double epsilon = 0.1; // for RRT*
+	double epsilon = 0.5; // for RRT*
 
 	// Goal configuration defined.
 	Q to_deg(6,151.34, -96.45, -107.53, -120.87, 272.71, 2.02); // deg

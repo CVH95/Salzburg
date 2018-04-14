@@ -11,7 +11,7 @@ $ ping 192.168.100.2
 
 ## Running the programm
 
-It uses caros UR msgs11:
+It uses caros UR msgs:
 
 ```
 $ source /opt/ros/kinetic/setup.bash

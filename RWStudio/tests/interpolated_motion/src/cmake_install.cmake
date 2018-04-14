@@ -1,4 +1,4 @@
-# Install script for directory: /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src
+# Install script for directory: /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
