@@ -50,7 +50,7 @@ public:
 	bool setQ(Q q)
 	{
 		// Tell robot to move to joint config q
-        float speed = 0.1;
+        float speed = 0.5;
 		if (robot->moveServoQ(q, speed)) {
             // moveServoQ temintates before the robot is at the destination, so wait until it is
 			Q qCurrent;
