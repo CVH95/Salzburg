@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ur5_path_interface</name>
+  <version>0.0.0</version>
+  <description>	ROS node that makes UR5 execute motions. 
+  		ROVI2 Final Project
+		Carlos Viescas, Sergi Grau-Moya, Mathesh Pitchai, Richárd Kemencei
+		SDU Robotics
+  </description>
+
+  
+  <maintainer email="cavie17@student.sdu.dk">charlie</maintainer>
+  
+  <license>TODO</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+  <build_depend>roslint</build_depend>
+
+  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rosconsole</depend>
+  <depend>geometry_msgs</depend>
+  <depend>caros_control_msgs</depend>
+  <depend>caros_common_msgs</depend>
+  <depend>caros_common</depend>
+  <depend>caros_common_robwork</depend>
+  <depend>caros_control</depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
+  <doc_depend>doxygen</doc_depend>
+  <doc_depend>rosdoc_lite</doc_depend>
+
+  <export>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
+
+</package>
