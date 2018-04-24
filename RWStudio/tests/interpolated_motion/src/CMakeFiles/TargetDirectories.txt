@@ -1,3 +1,0 @@
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles/edit_cache.dir
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles/rebuild_cache.dir
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/interpolated_motion/src/CMakeFiles/motion.dir

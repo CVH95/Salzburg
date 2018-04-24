@@ -4112,7 +4112,7 @@ rw/proximity/CollisionToleranceStrategy.hpp
 rw/proximity/DistanceStrategy.hpp
 -
 
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/main.cpp
+/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/planner.cpp
 iostream
 -
 fstream

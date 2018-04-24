@@ -1,3 +1,0 @@
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/trajectory/src/CMakeFiles/rebuild_cache.dir
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/trajectory/src/CMakeFiles/edit_cache.dir
-/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/tests/trajectory/src/CMakeFiles/trajectory.dir
