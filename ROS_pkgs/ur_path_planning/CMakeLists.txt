@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ur_pathPlanning)
+project(ur_path_planning)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 set (CMAKE_CXX_STANDARD 11)
@@ -47,6 +47,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(ur_pathPlanning src/main.cpp)
-target_link_libraries(ur_pathPlanning ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
-add_dependencies(ur_pathPlanning caros_common_msgs caros_control_msgs caros_control)
+add_executable(ur_path_planning src/main.cpp)
+target_link_libraries(ur_path_planning ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
+add_dependencies(ur_path_planning caros_common_msgs caros_control_msgs caros_control)

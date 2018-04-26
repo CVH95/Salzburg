@@ -123,32 +123,32 @@ planning/fast:
 	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/build
 .PHONY : planning/fast
 
-planner.o: planner.cpp.o
+main.o: main.cpp.o
 
-.PHONY : planner.o
+.PHONY : main.o
 
 # target to build an object file
-planner.cpp.o:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/planner.cpp.o
-.PHONY : planner.cpp.o
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-planner.i: planner.cpp.i
+main.i: main.cpp.i
 
-.PHONY : planner.i
+.PHONY : main.i
 
 # target to preprocess a source file
-planner.cpp.i:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/planner.cpp.i
-.PHONY : planner.cpp.i
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-planner.s: planner.cpp.s
+main.s: main.cpp.s
 
-.PHONY : planner.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-planner.cpp.s:
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/planner.cpp.s
-.PHONY : planner.cpp.s
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... planning"
-	@echo "... planner.o"
-	@echo "... planner.i"
-	@echo "... planner.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

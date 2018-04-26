@@ -31,7 +31,7 @@ LINK_DIRECTORIES( ${ROBWORK_LIBRARY_DIRS} )
 #SET(SrcFiles src/HelloWorldRobWork.cpp)
 
 # The shared library to build:
-ADD_EXECUTABLE(planning planner.cpp ${SrcFiles})
+ADD_EXECUTABLE(planning main.cpp ${SrcFiles})
 TARGET_LINK_LIBRARIES(planning ${ROBWORK_LIBRARIES})
 
 MESSAGE(${PROJECT_NAME} " done!")

@@ -8,10 +8,6 @@
 
 #include <iostream>
 #include <fstream> 
-#include <rw/rw.hpp>
-#include <rwlibs/pathplanners/rrt/RRTPlanner.hpp>
-#include <rwlibs/pathplanners/rrt/RRTQToQPlanner.hpp>
-#include <rwlibs/proximitystrategies/ProximityStrategyFactory.hpp>
 #include <vector>
 #include <math.h> 
 #include <numeric>
@@ -20,7 +16,16 @@
 #include <boost/foreach.hpp>
 #include <string>
 #include <vector>
+// RobWork headers
+#include <rw/rw.hpp>
+#include <rwlibs/pathplanners/rrt/RRTPlanner.hpp>
+#include <rwlibs/pathplanners/rrt/RRTQToQPlanner.hpp>
+#include <rwlibs/proximitystrategies/ProximityStrategyFactory.hpp>
 #include <rw/trajectory/CubicSplineFactory.hpp>
+// Caros headers
+/*#include <caros/universal_robots.h>
+#include <caros/common.h>
+#include <caros/common_robwork.h>*/
 
 using namespace std;
 using namespace rw::common;
@@ -42,6 +47,8 @@ class AnytimePlanning{
 	bool checkCollisions(const State &state, const CollisionDetector &detector, const Q &q);
 	QPath get_path(double epsilon, State state, rw::math::Q from, rw::math::Q to);
 	QPath get_trajectory(QPath path, rw::math::Q dq_start, rw::math::Q dq_end);
+	QPath return_path(const string filename);
+	//vector<caros::caros_common_msgs::Q> convert_trajectory(QPath path);
 
   private: 
 	/*const string wc_name;

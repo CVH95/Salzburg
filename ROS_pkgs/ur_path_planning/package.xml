@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ur_pathPlanning</name>
+  <name>ur_path_planning</name>
   <version>0.0.0</version>
   <description>How to make UR5 follow a pre-planned path</description>
 

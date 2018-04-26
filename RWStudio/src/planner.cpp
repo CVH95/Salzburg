@@ -103,15 +103,17 @@ QPath get_path(WorkCell::Ptr wc, Device::Ptr device, double epsilon, State state
 	// Saving original plan
 	int j = 0;
 	ofstream pf;
-	pf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_original.txt");
+	pf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/backwards_path.txt");
 	for (QPath::iterator it = path.begin(); it < path.end(); it++) 
 	{
 		pf << j << ":  " << *it << endl;
 		j++;	
 	} // for
-	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_original.txt" << endl;
+	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/backwards_path.txt" << endl;
 	cout << endl;
 	
+	pf.close();
+
 	return path;
 
 } // get_path()
@@ -134,7 +136,9 @@ QPath get_trajectory(QPath path, rw::math::Q dq_start, rw::math::Q dq_end)
 
 	int j = 0;
 	ofstream tf;
-	tf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_interpolated.txt");	
+	tf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/backwards_path_interpolated.txt");
+	ofstream sf;
+	sf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/backwards_trajectory");	
 
 	double t0 = traj->startTime();
   	double tn = traj->endTime();
@@ -146,14 +150,19 @@ QPath get_trajectory(QPath path, rw::math::Q dq_start, rw::math::Q dq_end)
 		// Conversion to save to .lua file
 		rw::math::Q q_i(6, traj->x(t)[0], traj->x(t)[1], traj->x(t)[2], traj->x(t)[3], traj->x(t)[4], traj->x(t)[5] );  
 		tf << j << ":  t = " << t << "  |  " << q_i << endl;
-		interpolated_path.push_back(q_i);
+		sf << traj->x(t)[0] << " " << traj->x(t)[1] << " " << traj->x(t)[2] << " " << traj->x(t)[3] << " " << traj->x(t)[4] << " " << traj->x(t)[5] << endl;
+		interpolated_path.push_back(q_i);	
+		j = j+1;
 
 	} // for
 	cout << "	>> Trajectory length: " << interpolated_path.size() << " nodes." << endl;
 	cout << "	>> Saved with time steps of 0.01 seconds." << endl;
 	cout << endl;
-	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_interpolated.txt" << endl;
+	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/backwards_path_interpolated.txt" << endl;
 	cout << endl;
+	
+	tf.close();
+	sf.close();
 
 	return interpolated_path;
 
@@ -220,7 +229,7 @@ int main(int argc, char** argv)
 	if(ext1 == true || ext2 == true)
 		{return 0;}*/
 	// Calculate path
-	QPath rawPath = get_path(wc, device, epsilon, state, from, to);
+	QPath rawPath = get_path(wc, device, epsilon, state, to, from);
 	// Interpolate path
 	QPath smoothPath = get_trajectory(rawPath, dq_start, dq_end);
 

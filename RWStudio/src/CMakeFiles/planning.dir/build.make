@@ -57,38 +57,38 @@ include CMakeFiles/planning.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/planning.dir/flags.make
 
-CMakeFiles/planning.dir/planner.cpp.o: CMakeFiles/planning.dir/flags.make
-CMakeFiles/planning.dir/planner.cpp.o: planner.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/planning.dir/planner.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/planning.dir/planner.cpp.o -c /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/planner.cpp
+CMakeFiles/planning.dir/main.cpp.o: CMakeFiles/planning.dir/flags.make
+CMakeFiles/planning.dir/main.cpp.o: main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/planning.dir/main.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/planning.dir/main.cpp.o -c /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/main.cpp
 
-CMakeFiles/planning.dir/planner.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/planning.dir/planner.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/planner.cpp > CMakeFiles/planning.dir/planner.cpp.i
+CMakeFiles/planning.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/planning.dir/main.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/main.cpp > CMakeFiles/planning.dir/main.cpp.i
 
-CMakeFiles/planning.dir/planner.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/planning.dir/planner.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/planner.cpp -o CMakeFiles/planning.dir/planner.cpp.s
+CMakeFiles/planning.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/planning.dir/main.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/src/main.cpp -o CMakeFiles/planning.dir/main.cpp.s
 
-CMakeFiles/planning.dir/planner.cpp.o.requires:
+CMakeFiles/planning.dir/main.cpp.o.requires:
 
-.PHONY : CMakeFiles/planning.dir/planner.cpp.o.requires
+.PHONY : CMakeFiles/planning.dir/main.cpp.o.requires
 
-CMakeFiles/planning.dir/planner.cpp.o.provides: CMakeFiles/planning.dir/planner.cpp.o.requires
-	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/planner.cpp.o.provides.build
-.PHONY : CMakeFiles/planning.dir/planner.cpp.o.provides
+CMakeFiles/planning.dir/main.cpp.o.provides: CMakeFiles/planning.dir/main.cpp.o.requires
+	$(MAKE) -f CMakeFiles/planning.dir/build.make CMakeFiles/planning.dir/main.cpp.o.provides.build
+.PHONY : CMakeFiles/planning.dir/main.cpp.o.provides
 
-CMakeFiles/planning.dir/planner.cpp.o.provides.build: CMakeFiles/planning.dir/planner.cpp.o
+CMakeFiles/planning.dir/main.cpp.o.provides.build: CMakeFiles/planning.dir/main.cpp.o
 
 
 # Object files for target planning
 planning_OBJECTS = \
-"CMakeFiles/planning.dir/planner.cpp.o"
+"CMakeFiles/planning.dir/main.cpp.o"
 
 # External object files for target planning
 planning_EXTERNAL_OBJECTS =
 
-planning: CMakeFiles/planning.dir/planner.cpp.o
+planning: CMakeFiles/planning.dir/main.cpp.o
 planning: CMakeFiles/planning.dir/build.make
 planning: /home/charlie/RobWork/RobWork/libs/release/librw_lua_s.a
 planning: /usr/lib/x86_64-linux-gnu/liblua5.2.so
@@ -136,7 +136,7 @@ CMakeFiles/planning.dir/build: planning
 
 .PHONY : CMakeFiles/planning.dir/build
 
-CMakeFiles/planning.dir/requires: CMakeFiles/planning.dir/planner.cpp.o.requires
+CMakeFiles/planning.dir/requires: CMakeFiles/planning.dir/main.cpp.o.requires
 
 .PHONY : CMakeFiles/planning.dir/requires
 

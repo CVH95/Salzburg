@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ur_pathPlanning)
+project(planner)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 set (CMAKE_CXX_STANDARD 11)
@@ -32,7 +32,7 @@ SET(RW_ROOT $ENV{RW_ROOT})
 MESSAGE("-- RobWork root: " ${RW_ROOT})
 SET(RobWork_DIR ${RW_ROOT}/cmake)
 FIND_PACKAGE(RobWork REQUIRED)
-INCLUDE_DIRECTORIES( ${ROBWORK_INCLUDE_DIRS} )
+INCLUDE_DIRECTORIES( ${ROBWORK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} include)
 LINK_DIRECTORIES( ${ROBWORK_LIBRARY_DIRS} )
 
 ###################################
@@ -48,10 +48,12 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+#include_directories( ${catkin_INCLUDE_DIRS} )
 
-add_executable(ur_pathPlanning src/main.cpp)
-target_link_libraries(ur_pathPlanning ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
-add_dependencies(ur_pathPlanning caros_common_msgs caros_control_msgs caros_control)
+add_library(AnytimePlanning SHARED src/AnytimePlanning.cpp)
+
+add_executable(planner src/main.cpp)
+target_link_libraries(planner AnytimePlanning ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
+add_dependencies(planner caros_common_msgs caros_control_msgs caros_control)
+
+MESSAGE(${PROJECT_NAME} " done!")

@@ -63,11 +63,11 @@ int main(int argc, char** argv)
 	std::cout << "Current joint config:" << std::endl << robot.getQ() << std::endl << std::endl;
 
 	std::cout << "Input destination joint config in radians:" << std::endl;
-	float q1, q2, q3, q4, q5, q6;
-	std::cin >> q1 >> q2 >> q3 >> q4 >> q5 >> q6;
-	rw::math::Q q(6, q1, q2, q3, q4, q5, q6);
+	/*float q1, q2, q3, q4, q5, q6;
+	std::cin >> q1 >> q2 >> q3 >> q4 >> q5 >> q6;*/
+	rw::math::Q q_start(6, -1.04475, -1.78024, -2.24013, -0.781733, 1.61513, 0.0356047);
 
-	if (robot.setQ(q))
+	if (robot.setQ(q_start))
 		std::cout << std::endl << "New joint config:" << std::endl << robot.getQ() << std::endl;
 	else
 		std::cout << std::endl << "Failed to move robot" << std::endl;
