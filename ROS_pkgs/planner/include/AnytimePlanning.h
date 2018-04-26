@@ -23,9 +23,12 @@
 #include <rwlibs/proximitystrategies/ProximityStrategyFactory.hpp>
 #include <rw/trajectory/CubicSplineFactory.hpp>
 // Caros headers
-/*#include <caros/universal_robots.h>
+//#include <caros/universal_robots.h>
 #include <caros/common.h>
-#include <caros/common_robwork.h>*/
+#include <caros/serial_device_si_proxy.h>
+#include <caros/common_robwork.h>
+#include <caros/ur_service_interface.h>
+
 
 using namespace std;
 using namespace rw::common;
@@ -48,13 +51,14 @@ class AnytimePlanning{
 	QPath get_path(double epsilon, State state, rw::math::Q from, rw::math::Q to);
 	QPath get_trajectory(QPath path, rw::math::Q dq_start, rw::math::Q dq_end);
 	QPath return_path(const string filename);
-	//vector<caros::caros_common_msgs::Q> convert_trajectory(QPath path);
+	vector<caros::caros_common_msgs::Q> convert_trajectory(QPath path);
 
   private: 
 	/*const string wc_name;
 	const string dev_name;*/
 	rw::models::WorkCell::Ptr wc;
 	Device::Ptr device;
+	State state;
 	bool dev_found;
 	bool wc_found;
 	rw::pathplanning::QToQPlanner::Ptr planner;

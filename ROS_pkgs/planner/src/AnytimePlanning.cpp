@@ -23,8 +23,6 @@ using namespace rwlibs::proximitystrategies;
 
 /* NOTE */
 
-// Remember to initialize rw::kinematics::State state variable in the main().
-
 
 void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 {
@@ -88,8 +86,11 @@ bool AnytimePlanning::checkCollisions(const State &state, const CollisionDetecto
 
 
 // Constraint and Collision strategies; Then Generates path
-QPath AnytimePlanning::get_path(double epsilon, State state, rw::math::Q from, rw::math::Q to)
+QPath AnytimePlanning::get_path(double epsilon, rw::math::Q from, rw::math::Q to)
 {
+	// Get state
+	State state = wc->getDefaultState();
+
 	// Set collision detection strategy.
 	CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
 
@@ -272,7 +273,7 @@ QPath return_path(const string filename)
 
 
 
-/*/ Function that converts a given trajectory (in the form of QPath) into ROS readable vector ---> vector<caros_common_msgs::Q>
+// Function that converts a given trajectory (in the form of QPath) into ROS readable vector ---> vector<caros_common_msgs::Q>
 vector<caros::caros_common_msgs::Q> convert_trajectory(QPath path)
 {
 

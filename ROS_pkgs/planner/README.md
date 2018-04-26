@@ -2,16 +2,18 @@
 
 Implementation of Anytime Dynamic RRT path planning algorithm for Object Avoidance with a UR5 arm.
 
-### ROS nodes:
+This node requires CAROS to work. 
+
+#### Topics and services required:
 
 ```sh
-charlie@Asgard:~$ rostopic list
+~$ rostopic list
 /caros_universalrobot/caros_node/caros_node_state
 /caros_universalrobot/caros_serial_device_service_interface/robot_state
 /rosout
 /rosout_agg
 
-charlie@Asgard:~$ rosservice list
+~$ rosservice list
 /caros_universalrobot/caros_node/recover
 /caros_universalrobot/caros_node/terminate
 /caros_universalrobot/caros_serial_device_service_interface/move_lin
@@ -34,7 +36,7 @@ charlie@Asgard:~$ rosservice list
 /rosout/get_loggers
 /rosout/set_logger_level
 
-charlie@Asgard:~$ rostopic type /caros_universalrobot/caros_serial_device_service_interface/robot_state 
+~$ rostopic type /caros_universalrobot/caros_serial_device_service_interface/robot_state 
 caros_control_msgs/RobotState
 charlie@Asgard:~$ rosmsg show caros_control_msgs/RobotState 
 std_msgs/Header header
