@@ -152,3 +152,12 @@ $ rosrun robot_state_monitoring robot_state_monitoring
 ```
 
 #### 4. Planner.
+
+The planner node is the main one in charge of path planning and robot motion. Some features to mention about its implementation:
+
+ - It is set up as a client of the `move_servo_q` CAROS service. In order to move the robot, it requests the CAROS interface to do it by sending each configuraton vector Q in the trajectory calculated.
+ - It is subscribed to `robot_state` in order to be able to obtain instant information abour the current configuration state of the UR (needed for replanning). 
+
+```sh
+$ rosrun planner planner
+```

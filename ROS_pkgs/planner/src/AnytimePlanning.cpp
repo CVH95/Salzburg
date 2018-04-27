@@ -194,7 +194,7 @@ QPath AnytimePlanning::get_trajectory(QPath path, rw::math::Q dq_start, rw::math
 
 // This function reads the path to go back to q_start from the file where it is stored. This path is always constant in the program.
 // No obstacle are added when returning.
-QPath return_path(const string filename)
+QPath AnytimePlanning::return_path(const string filename)
 {
 
 	ifstream rf;
@@ -229,12 +229,13 @@ QPath return_path(const string filename)
 		
 	rff.close();
 
-	int values_lgth = values.size();
+	int values_lgth = values.size()/6;
 
 	if (nl == values_lgth)
 	{
 		// Reading data in file into rw::math::Q vector to be stored in QPath.
-		cout << "	>> Reading path:" << endl;
+		cout << "	>> Reading backwards path." << endl;
+		cout << endl;
 		int ind = 0;	
 		for (int i = 0; i<nl; i++)
 		{
@@ -270,3 +271,33 @@ QPath return_path(const string filename)
 	return return_path;
 
 } // return_path()
+
+
+// Function to send a trajectory requesting the CAROS service move_servo_q
+void AnytimePlanning::send_trajectory(ros::ServiceClient client, caros_control_msgs::SerialDeviceMoveServoQ srv, QPath path)
+{
+
+	for (const rw::math::Q& p : path)
+	{
+		// This should be able to move the robot
+		
+		caros_common_msgs::Q q;
+		q = caros::toRos(p);
+		srv.request.targets.push_back(q);
+    		srv.request.speeds.push_back(0.001);
+
+		if (client.call(srv))
+		{
+			ROS_INFO("CAROS_MOVE_SERVO_Q RESPONSE: %d", srv.response.success);
+		}// if
+		else	
+		{
+		ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
+		}// else
+
+		//ros::Duration(0.5).sleep(); // Sleep for half a second (Does ROS operates in seconds or miliseconds?)
+
+	}// for	
+
+}// send_trajectory()
+

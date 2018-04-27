@@ -4,7 +4,6 @@
 // Q_goal    --->   Q[6]{2.64138, -1.68337, -1.87675, -2.10958, 4.75969, 0.0352557} (rad)
 
 #include <AnytimePlanning.h>
-#include <URRobot.h>
 
 #include <iostream>
 #include <fstream> 
@@ -35,31 +34,21 @@ using namespace std;
 #define MAXTIME 1000.
 
 
+
 //---------------------------------------------------------------------------------------------------------
 
 
 int main(int argc, char** argv) 
 {
+	//rw::math::Math::seed();
 	ros::init(argc, argv, "planner");
 	ros::NodeHandle nh;
-
-	cout << "Ready to start" << endl;
-	cout << endl;
-	ros::Duration(3).sleep();
-
 
 	// LOADING WORKCELL & INITIAL SETTINGS
 	
 	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";
-	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
 
-	// Created object of the class URRobot with corresponding argument (ros::NodeHandle).
-	URRobot ur2(nh);
-	cout << "UR5's actual configuration:  " <<  ur2.getQ() << endl;
-	cout << endl;
-
-	// Created object of the class AnytimePlanning.
 	AnytimePlanning plan;
 	plan.Load_WorkCell(wcFile, deviceName);
 
@@ -77,11 +66,14 @@ int main(int argc, char** argv)
 
 	double epsilon = 0.5; //RRT's extend parameter
 
+	// Subscribe to get information about the robot state (this is now implemented in a separate node named 'robot_state_monitoring'.
+	// ros::Subscriber RS = nh.subscribe("/caros_universalrobot/caros_serial_device_service_interface/robot_state", 1, chatterCallback);
+	
+
 	// Set node to be client of "/caros_universalrobot/caros_serial_device_service_interface/move_servo_q".
 	// In order to broadcast Q's belonging to the path, it is required that the client node sends Q request msgs to the server in charge of moving the robot. 
 	ros::ServiceClient ur_client = nh.serviceClient<caros_control_msgs::SerialDeviceMoveServoQ>("/caros_universalrobot/caros_serial_device_service_interface/move_servo_q");
 	caros_control_msgs::SerialDeviceMoveServoQ srv;
-
 
 
 	// PATH PLANNING
@@ -90,24 +82,33 @@ int main(int argc, char** argv)
 	QPath raw_path = plan.get_path(epsilon, from, to);
 	// Interpolate the obtained path to create a smooth trajectory
 	QPath trajectory = plan.get_trajectory(raw_path, dq_start, dq_end);
-	// Get trajectory to go back to q_start
-	QPath bw_trajectory = plan.return_path(bw_file);
 	
 	// SEND (NUDES) PATH
 
-	plan.send_trajectory(ur_client, srv, trajectory);
-
-	cout << "Trajectory completed. Preparing to go back to the starting configuration." << endl;
-	ros::Duration(3).sleep(); // Sleep for one and a half seconds (Does ROS operates in seconds or miliseconds?)
-
-
-	plan.send_trajectory(ur_client, srv, bw_trajectory);
-	
-	cout << "Program completed successfully. Preparing to exit.... (ctrl+c)" << endl;
-	ros::Duration(3).sleep();
+	for (const rw::math::Q& p : trajectory)
+	{
+		// This should be able to move the robot
 		
-	//ros::spinOnce(); ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
-	ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
+		caros_common_msgs::Q q;
+		q = caros::toRos(p);
+		srv.request.targets.push_back(q);
+    		srv.request.speeds.push_back(0.001);
+
+		if (ur_client.call(srv))
+		{
+			ROS_INFO("CAROS_MOVE_SERVO_Q RESPONSE: %d", srv.response.success);
+		}// if
+		else	
+		{
+		ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
+		}// else
+
+		//ros::Duration(0.5).sleep(); // Sleep for half a second (Does ROS operates in seconds or miliseconds?)
+
+	}// for
+	
+	
+	//ros::spinOnce(); // ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
  	return 0;
 
 } // main()

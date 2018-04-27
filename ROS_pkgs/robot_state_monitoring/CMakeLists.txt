@@ -15,6 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
   caros_common
   caros_control
   std_msgs
+  caros_common_robwork
+  geometry_msgs
+  message_generation
+  rosconsole
+  roslint
 )
 
 ###################################
@@ -27,7 +32,7 @@ SET(RW_ROOT $ENV{RW_ROOT})
 MESSAGE("-- RobWork root: " ${RW_ROOT})
 SET(RobWork_DIR ${RW_ROOT}/cmake)
 FIND_PACKAGE(RobWork REQUIRED)
-INCLUDE_DIRECTORIES( ${ROBWORK_INCLUDE_DIRS} )
+INCLUDE_DIRECTORIES( ${ROBWORK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${ROBWORK_LIBRARY_DIRS} )
 
 ###################################
@@ -43,9 +48,7 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+#include_directories( ${catkin_INCLUDE_DIRS} )
 
 add_executable(robot_state_monitoring src/main.cpp)
 target_link_libraries(robot_state_monitoring ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})

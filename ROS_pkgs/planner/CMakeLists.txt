@@ -51,9 +51,10 @@ catkin_package(
 #include_directories( ${catkin_INCLUDE_DIRS} )
 
 add_library(AnytimePlanning SHARED src/AnytimePlanning.cpp)
+add_library(URRobot SHARED src/URRobot.cpp)
 
 add_executable(planner src/main.cpp)
-target_link_libraries(planner AnytimePlanning ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
+target_link_libraries(planner AnytimePlanning URRobot ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
 add_dependencies(planner caros_common_msgs caros_control_msgs caros_control)
 
 MESSAGE(${PROJECT_NAME} " done!")
