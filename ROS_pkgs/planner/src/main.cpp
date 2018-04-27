@@ -25,7 +25,8 @@
 #include <caros/common.h>
 #include <caros/serial_device_si_proxy.h>
 #include <caros/common_robwork.h>
-#include <caros/ur_service_interface.h>
+#include "caros_control_msgs/SerialDeviceMoveServoQ.h"
+//#include <caros/ur_service_interface.h>
 
 
 using namespace std;
@@ -71,10 +72,9 @@ int main(int argc, char** argv)
 
 	// Set node to be client of "/caros_universalrobot/caros_serial_device_service_interface/move_servo_q".
 	// In order to broadcast Q's belonging to the path, it is required that the client node sends Q request msgs to the server in charge of moving the robot. 
-	ros::ServiceClient client = nh.serviceClient<caros_control_msgs::SerialDeviceServoQ>("/caros_universalrobot/caros_serial_device_service_interface/move_servo_q");
-	caros_control_msgs::SerialDeviceServoQ srv;
+	ros::ServiceClient ur_client = nh.serviceClient<caros_control_msgs::SerialDeviceMoveServoQ>("/caros_universalrobot/caros_serial_device_service_interface/move_servo_q");
+	caros_control_msgs::SerialDeviceMoveServoQ srv;
 
-	/*
 
 	// PATH PLANNING
 
@@ -82,35 +82,33 @@ int main(int argc, char** argv)
 	QPath raw_path = plan.get_path(epsilon, from, to);
 	// Interpolate the obtained path to create a smooth trajectory
 	QPath trajectory = plan.get_trajectory(raw_path, dq_start, dq_end);
-	//Convert trajectory into ROS readable type
-	vector<caros::caros_common_msgs::Q> trajROS = plan.convert_trajectory(trajectory);
-
+	
 	// SEND (NUDES) PATH
-	int imax = trajROS.size();
-	for (int i; i<imax; i++)
+
+	for (const rw::math::Q& p : trajectory)
 	{
 		// This should be able to move the robot
-		caros::caros_common_msgs::Q q;
-		srv.request.targets(q);
+		
+		caros_common_msgs::Q q;
+		q = caros::toRos(p);
+		srv.request.targets.push_back(q);
+    		srv.request.speeds.push_back(0.001);
 
-		if (Robot.call(srv))
+		if (ur_client.call(srv))
 		{
-			ROS_INFO("Sum: %ld", (long int)srv.response.success);
-		}// if 
-		else
+			ROS_INFO("CAROS_MOVE_SERVO_Q RESPONSE: %d", srv.response.success);
+		}// if
+		else	
 		{
-			ROS_ERROR("Failed to call service add_two_ints");
+		ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
 		}// else
 
 		//ros::Duration(0.5).sleep(); // Sleep for half a second (Does ROS operates in seconds or miliseconds?)
 
 	}// for
-
-	*/
-		
 	
 	
 	//ros::spinOnce(); // ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
  	return 0;
 
-} // main
+} // main()

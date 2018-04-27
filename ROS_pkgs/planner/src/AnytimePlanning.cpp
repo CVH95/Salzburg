@@ -270,24 +270,3 @@ QPath return_path(const string filename)
 	return return_path;
 
 } // return_path()
-
-
-
-// Function that converts a given trajectory (in the form of QPath) into ROS readable vector ---> vector<caros_common_msgs::Q>
-vector<caros::caros_common_msgs::Q> convert_trajectory(QPath path)
-{
-
-	vector<caros::caros_common_msgs::Q> traj_ros;
-
-	for( const rw::math::Q& p : path )
-	{
-	
-		caros::caros_common_msgs::Q q_new;
-		q_new = caros::toRos(p);
-		traj_ros.push_back(q_new);
-	
-	}// for
-
-	return traj_ros;
-
-} // convert_trajectory() */

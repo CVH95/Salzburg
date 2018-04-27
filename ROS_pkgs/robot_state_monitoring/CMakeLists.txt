@@ -47,6 +47,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executablerobot_state_monitoring src/ur_caros_example.cpp)
+add_executable(robot_state_monitoring src/main.cpp)
 target_link_libraries(robot_state_monitoring ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
 add_dependencies(robot_state_monitoring caros_common_msgs caros_control_msgs caros_control)
