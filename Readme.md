@@ -1,5 +1,7 @@
 # ROVI 2 Final Project: OBJECT AVOIDANCE
 
+By Carlos, Richárd, Sergi and Mathesh.
+
 ## Download and build repository
 
 ```sh
