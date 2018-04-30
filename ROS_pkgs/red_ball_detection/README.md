@@ -1,14 +1,25 @@
 # DETECTOR PACKAGE
 
-Uses a Bumblebee stereo camera to track the obstacle (red ball) and triangulate its 3D coordinates with respect to the UR5 base frame. Three main nodes:
+Uses a Bumblebee stereo camera to track the obstacle (red ball) and triangulate its 3D coordinates with respect to the UR5 base frame. Four main nodes:
 
- - Detector 
+ - Detector (right image)
+ - Detector (left image)
  - Stereo triangulation
  - Kalman tracking 
 
-Comunnication bewteen nodes done through publisher/subscriber protocol.
+Communication bewteen nodes done through publisher/subscriber protocol.
 
 #### List of ROS topics launched by /pointgrey\_camera\_driver/bumblebee.launch
+
+In order to work with the camera, it is necessary to export ROS\_MASTER\_URI and ROS\_IP to that of the WorkCell's comuter (and launch the bumblebee driver in that computer aswell).
+Remember to repeat this for all terminals in which vision nodes will be launch.
+
+```sh
+$ export ROS_MASTER_URI=http://192.168.100.52:11311/
+$ export ROS_IP=192.168.100.25
+```
+
+ROS topics launched by bumblebee driver: 
 
 ```sh
 $ rostopic list
@@ -89,5 +100,16 @@ $ rostopic list
 /rosout_agg
 ```
 
-Initially, the detector program should be subscribed to `/image_raw` of both cameras (left and right) and convert it into `cv::Mat`. From there, perform detection algorithm and publish 2D pixel coordinates of the center of the ball in both images into another topic (via red_ball_detection/ballCentrum.msg), created for communication with the triangulation node. 
-The triangulation node calculates the 3D position of the ball and publishes the coordinates into a third topic (via red_ball_detection/ballToRobotBase.msg) that the planner reads.
+Initially, the detector program should be subscribed to `/image_raw` of both cameras (left and right) and convert it into `cv::Mat`. From there, perform detection algorithm and publish 2D pixel coordinates of the center of the ball in both images into another topic (via red\_ball\_detection/ballCentrum.msg), created for communication with the triangulation node. 
+The triangulation node calculates the 3D position of the ball and publishes the coordinates into a third topic (via red\_ball\_detection/ballToRobotBase.msg) that the planner reads.
+
+#### Image Feature Detectors
+
+The same algorithm is applied to both images perceived by the Bumblebee 2 camera. The main feature that we are trying to detect is the center of the Red Ball we use as obstacle. To do that, separately we subscribe the right image detector to the topic `/camera/right/image_raw` , while the left detector is subscribed to `/camera/left/image_raw` topic to receive images. This gives the raw input (uncorrupted) to the program. To recognize the ball, we implemented a detector based on color segmentation plus morphological manipulation of the image to produce a binary video stream with all background in black, and (hopefully) a shape similar to a circle where the ball is. Then, we approximate the ball's shape by a minimum enclosing circle acting as bounding box, and use the center of this bounding circle as the ball center. 
+
+The pixel coordinates of this ball are published in the topics: 
+
+ - Left image: `/red_ball_detection/left_image_location`
+ - Right image: `/red_ball_detection/right_image_location`
+
+ 
