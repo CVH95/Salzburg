@@ -3,8 +3,9 @@
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <red_ball_detection/ballCentrum.h> // Created msg format
 // OpenCV
-#include <opencv2/opencv>
+#include <opencv2/opencv.hpp>
 // General
 #include <iostream>
 #include <fstream>
@@ -17,10 +18,8 @@
 
 # define M_PI           3.14159265358979323846
 
-
-static const std::string OPENCV_WINDOW_RIGHT = "Right Image";
-static const std::string OPENCV_WINDOW_LEFT = "Left Image";
-
+using namespace std;
+using namespace cv;
 
 class ObstacleDetection {
 
@@ -38,8 +37,9 @@ class ObstacleDetection {
 
 	// Variables for the detector
 	int kernel_size;
-	int low_h = 0;
-	int high_h = 0;
+	int low_h;
+	int high_h;
+	string OPENCV_WINDOW;
 
   public:
 	
@@ -47,8 +47,8 @@ class ObstacleDetection {
 	~ObstacleDetection();
 	void cv_ros_iface(const sensor_msgs::ImageConstPtr& msg);
 	void track_low_h(int,void*);
-	void track_low_h(int,void*);
-	void find_ball(cv::Mat img, const string window_name);
+	void track_high_h(int,void*);
+	void find_ball(cv::Mat img);
 	
 
 };
