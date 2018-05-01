@@ -5,7 +5,7 @@ Uses a Bumblebee stereo camera to track the obstacle (red ball) and triangulate 
  - Detector (right image): `stereo_detector_destro`
  - Detector (left image): `stereo_detector_sinistro`
  - Stereo triangulation: `stereo_triangulation`
- - Kalman tracking 
+ - Kalman tracking: `(Not implemented yet)` 
 
 Communication bewteen nodes done through publisher/subscriber protocol.
 

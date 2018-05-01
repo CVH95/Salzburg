@@ -20,7 +20,7 @@ ObstacleDetection::ObstacleDetection(const string sub_topic_name, const string p
 
 	// Hue value range for red color.
 	low_h = 0;
-	high_h = 15;
+	high_h = 10;
 	kernel_size = 3;
 
 	// Create OpenCV Window to display
@@ -115,13 +115,13 @@ void ObstacleDetection::find_ball(cv::Mat img)
 	
 	//createTrackbar("min_H", OPENCV_WINDOW, &low_h, 255, ObstacleDetection::track_low_h);
 	//createTrackbar("max_H", OPENCV_WINDOW, &high_h, 255, ObstacleDetection::track_high_h);
- 
-	imshow(OPENCV_WINDOW, RedBall);
-	waitKey(1);
 	
 	int m_size = 2;
 	Mat element = getStructuringElement(MORPH_ELLIPSE, Size(m_size+1, m_size+1), Point(m_size,m_size));
-	morphologyEx(RedBall,RedBall, MORPH_OPEN, element,Point(-1,-1),6);
+	morphologyEx(RedBall, RedBall, MORPH_OPEN, element, Point(-1,-1), 6);
+
+	imshow(OPENCV_WINDOW, RedBall);
+	waitKey(1);
 	
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -160,12 +160,14 @@ void ObstacleDetection::find_ball(cv::Mat img)
 	
 	else if (center.size() == 1)
 	{
-		float coordinates[2];	
-		coordinates[0] = center[0].x;
-		coordinates[1] = center[0].y;
+		// Create msg
+		red_ball_detection::ballCentrum coordinates;
+	
+		coordinates.data.push_back(center[0].x);
+		coordinates.data.push_back(center[0].y);
 
-		pub_coord.publish(coordinates[2]);
-   		cout << "Center (x, y) = (" << coordinates[0] << ", " << coordinates[1] << ")" << endl;
+		pub_coord.publish(coordinates);
+   		cout << "Center (x, y) = (" << center[0].x << ", " << center[0].y << ")" << endl;
 
 	}// else if 
 	
@@ -174,7 +176,10 @@ void ObstacleDetection::find_ball(cv::Mat img)
 		// Assuming that the centers detected are due to production of serveral enclosing circles close to the ball.
 		// Averaging them
 		vector<float> x, y;
-		float coordinates[2];
+
+		// Create msg
+		red_ball_detection::ballCentrum coordinates;
+
 		for( int j; j<center.size(); j++)
 		{
 			x.push_back(center[j].x);
@@ -184,14 +189,14 @@ void ObstacleDetection::find_ball(cv::Mat img)
 		
 		float x_sum = std::accumulate(x.begin(), x.end(), 0.0);
 		float x_avg = x_sum / x.size();
-		coordinates[0] = x_avg;	
+		coordinates.data.push_back(x_avg);	
 
 		float y_sum = std::accumulate(y.begin(), y.end(), 0.0);
 		float y_avg = y_sum / y.size();
-		coordinates[1] = y_avg;
+		coordinates.data.push_back(y_avg);
 		
-		pub_coord.publish(coordinates[2]);
-   		cout << "Center (x, y) = (" << coordinates[0] << ", " << coordinates[1] << ")" << endl;
+		pub_coord.publish(coordinates);
+   		cout << "Center (x, y) = (" << x_avg << ", " << y_avg << ")" << endl;
 
 	}// else
 
