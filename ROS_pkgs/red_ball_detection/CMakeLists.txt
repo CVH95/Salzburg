@@ -5,13 +5,15 @@ project(red_ball_detection)
 find_package(catkin REQUIRED COMPONENTS
   rosconsole
   roscpp
-  roslibs
+  roslib
   std_msgs
   cv_bridge
   image_transport
   sensor_msgs
   message_generation
 )
+
+find_package(OpenCV 3 REQUIRED)
 
 
 # Generating new messages
@@ -31,15 +33,20 @@ catkin_package( CATKIN_DEPENDS message_runtime )
 
 #includes 
 # Do not forget to declare the /include directory if a shared library is built
-include_directories( ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} )
+include_directories( ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} include)
 
 # Shared Libraries
-#add_librarby (<name> SHARED src/<source_code>.cpp)
+add_library(ObstacleDetection SHARED src/ObstacleDetection.cpp)
 
-# Build Detector Node
-add_executable(stereo_detector src/detector.cpp)
-target_link_libraries( stereo_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ) 
+# Build Detector (Right image) Node
+add_executable(stereo_detector_destro src/detector_right_image.cpp)
+target_link_libraries( stereo_detector_destro ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} )
+
+# Build Detector (Left image) Node
+add_executable(stereo_detector_sinistro src/detector_left_image.cpp)
+target_link_libraries( stereo_detector_sinistro ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 
 # Build Stereo Triangulation Node
 add_executable(stereo_triangulation src/triangulation.cpp)
-target_link_libraries( stereo_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ) 
+target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
+
