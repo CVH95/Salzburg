@@ -1,4 +1,4 @@
-# TO DO LIST (27.04.2018)
+# TO DO LIST (02.05.2018)
 
 #### ROS shit 
 
