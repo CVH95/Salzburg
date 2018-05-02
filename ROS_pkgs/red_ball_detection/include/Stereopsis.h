@@ -2,7 +2,7 @@
 
 // ROVI2 Object Avoidance
 
-// Richárd. Sergi, Mathesh and Carlos
+// Richárd, Sergi, Mathesh and Carlos
 
 // Stereopsis.h
 
