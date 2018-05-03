@@ -53,3 +53,7 @@ add_executable(stereo_triangulation src/triangulation.cpp )
 target_link_libraries( stereo_triangulation ObstacleDetection Stereopsis ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 #target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 
+# Install Launch files
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  PATTERN ".svn" EXCLUDE)
