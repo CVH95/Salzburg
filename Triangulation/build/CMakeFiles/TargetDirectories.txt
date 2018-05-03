@@ -1,3 +1,0 @@
-/home/richard/workspace/rovi2/vision/Stereopsis_solution/build/CMakeFiles/rebuild_cache.dir
-/home/richard/workspace/rovi2/vision/Stereopsis_solution/build/CMakeFiles/edit_cache.dir
-/home/richard/workspace/rovi2/vision/Stereopsis_solution/build/CMakeFiles/Stereopsis.dir

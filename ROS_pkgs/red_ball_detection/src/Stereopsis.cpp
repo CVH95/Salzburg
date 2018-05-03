@@ -23,18 +23,18 @@ Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 // ROS callbacks to get ball image coordintes subscribing to the topic they are broadcasted in.
 void Stereopsis::get_left_coordinates(const red_ball_detection::ballCentrum msg)
 {
-
-	left.push_back(msg.data[0]);
-	left.push_back(msg.data[0]);
+	// cout << "Left image coordinates: " << msg << endl;
+	left0 = msg.data[0];
+	left1 = msg.data[1];
 
 }// get_left_coordinates()
 
 
 void Stereopsis::get_right_coordinates(const red_ball_detection::ballCentrum msg)
 {
-
-	right.push_back(msg.data[0]);
-	right.push_back(msg.data[0]);
+	// cout << "Right image coordinates: " << msg << endl;
+	right0 = msg.data[0];
+	right1 = msg.data[1];
 
 }// get_right_coordinates()
 
@@ -43,20 +43,16 @@ void Stereopsis::get_right_coordinates(const red_ball_detection::ballCentrum msg
 // Grouping them all and clearing input vectors for next round
 vector<float> Stereopsis::group_coordinates(ros::NodeHandle nh, const string sub_left, const string sub_right)
 {
-
 	// Subscribers
 	left_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_left, 1, &Stereopsis::get_left_coordinates, this);
 	right_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_right, 1, &Stereopsis::get_right_coordinates, this);
 
 	vector<float> both;
 	
-	both.push_back(left[0]);
-	both.push_back(left[1]);
-	both.push_back(right[0]);
-	both.push_back(right[1]);
-
-	left.clear();
-	right.clear();
+	both.push_back(left0);
+	both.push_back(left1);
+	both.push_back(right0);
+	both.push_back(right1);
 
 	return both;
 

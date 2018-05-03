@@ -58,12 +58,15 @@ class Stereopsis{
 		ros::Subscriber left_subs;
 		ros::Subscriber right_subs;
 		ros::Publisher pub;
-		vector<float> left;
-		vector<float> right;
+		float left0, left1;
+		float right0, right1;
 		//cv::Mat proj_l;
 		//cv::Mat proj_r;
 
 	public:
+		//vector<float> left;
+		//vector<float> right;
+		
 		Stereopsis(ros::NodeHandle nh, const string pub_topic_name);
 		void get_left_coordinates(const red_ball_detection::ballCentrum msg);
 		void get_right_coordinates(const red_ball_detection::ballCentrum msg);

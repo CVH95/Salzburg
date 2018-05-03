@@ -61,21 +61,26 @@ int main(int argc, char** argv)
 
 	Mat proj_l = triangulation.constructProjectionMat(stPair.cam1);
 	Mat proj_r = triangulation.constructProjectionMat(stPair.cam2);
-
-	// Obtain image coordinates
-	vector<float> px_c = triangulation.group_coordinates(nh, left_sub_name, right_sub_name);
-	cout << "Subscription coordinates:  " << px_c[0] << ", " << px_c[0] << ", " << px_c[0] << ", " << px_c[0] << endl;
-
-	// Execute triangulation
-	vector<float> t = triangulation.calculate_3D_location(px_c, proj_l, proj_r);
 	
-	// Clear vector for new entries
-	// px_c.clear();
-	
-	// Broadcast triangulated coordinates into the network
-	triangulation.broadcast_3D_location(t);
+	while(ros::ok())
+	{
+		// Obtain image coordinates
+		vector<float> px_c = triangulation.group_coordinates(nh, left_sub_name, right_sub_name);
+		cout << "Subscription coordinates:  " << px_c[0] << ", " << px_c[0] << ", " << px_c[0] << ", " << px_c[0] << endl;
 
-	ros::spin();
+		// Execute triangulation
+		vector<float> t = triangulation.calculate_3D_location(px_c, proj_l, proj_r);
+		cout << "Triangulated coordinates X, Y, Z:  " << t[0] << ", " << t[1] << ", " << t[2] << endl;
+		// Clear vector for new entries
+		// px_c.clear();
+	
+		// Broadcast triangulated coordinates into the network
+		triangulation.broadcast_3D_location(t);
+
+		ros::spinOnce();
+	
+	}// while
+
 	return 0;
 
 }// main()
