@@ -2,7 +2,7 @@
 
 #### ROS shit 
 
-- Complete triangulation node.
+- Implement the control loop (decide how much time to update camera infoand this stuff).
 - Add Kalman Filter node.
 
 #### NON-ROS shit
