@@ -23,9 +23,10 @@ Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 
 
 // Grouping them all and clearing input vectors for next round
-vector<float> Stereopsis::group_coordinates(ros::NodeHandle nh,
-											const geometry_msgs::PointStamped::ConstPtr &left_subs,
-											const geometry_msgs::PointStamped::ConstPtr &right_subs))
+vector<float> Stereopsis::group_coordinates(
+	ros::NodeHandle nh,
+	const geometry_msgs::PointStamped::ConstPtr &left_subs,
+	const geometry_msgs::PointStamped::ConstPtr &right_subs)
 {
 	left0 = left_subs.data[0];
 	left1 = left_subs.data[1];
