@@ -35,6 +35,7 @@ catkin_package( CATKIN_DEPENDS message_runtime )
 # Do not forget to declare the /include directory if a shared library is built
 include_directories( ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} include)
 
+
 # Shared Libraries
 add_library(ObstacleDetection SHARED src/ObstacleDetection.cpp)
 
