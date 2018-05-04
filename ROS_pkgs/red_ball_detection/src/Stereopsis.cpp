@@ -20,32 +20,17 @@ Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 
 
 
-// ROS callbacks to get ball image coordintes subscribing to the topic they are broadcasted in.
-void Stereopsis::get_left_coordinates(const red_ball_detection::ballCentrum msg)
-{
-	// cout << "Left image coordinates: " << msg << endl;
-	left0 = msg.data[0];
-	left1 = msg.data[1];
-
-}// get_left_coordinates()
-
-
-void Stereopsis::get_right_coordinates(const red_ball_detection::ballCentrum msg)
-{
-	// cout << "Right image coordinates: " << msg << endl;
-	right0 = msg.data[0];
-	right1 = msg.data[1];
-
-}// get_right_coordinates()
-
 
 
 // Grouping them all and clearing input vectors for next round
-vector<float> Stereopsis::group_coordinates(ros::NodeHandle nh, const string sub_left, const string sub_right)
+vector<float> Stereopsis::group_coordinates(ros::NodeHandle nh,
+											const geometry_msgs::PointStamped::ConstPtr &left_subs,
+											const geometry_msgs::PointStamped::ConstPtr &right_subs))
 {
-	// Subscribers
-	left_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_left, 1, &Stereopsis::get_left_coordinates, this);
-	right_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_right, 1, &Stereopsis::get_right_coordinates, this);
+	left0 = left_subs.data[0];
+	left1 = left_subs.data[1];
+	right0 = right_subs.data[0];
+	right1 = right_subs.data[1];
 
 	vector<float> both;
 	
