@@ -100,8 +100,8 @@ $ rostopic list
 /rosout_agg
 ```
 
-Initially, the detector program should be subscribed to `/image_raw` of both cameras (left and right) and convert it into `cv::Mat`. From there, perform detection algorithm and publish 2D pixel coordinates of the center of the ball in both images into another topic (via red\_ball\_detection/ballCentrum.msg), created for communication with the triangulation node. 
-The triangulation node calculates the 3D position of the ball and publishes the coordinates into a third topic (via red\_ball\_detection/ballToRobotBase.msg) that the planner reads.
+Initially, the detector program should be subscribed to `/image_raw` of both cameras (left and right) and convert it into `cv::Mat`. From there, perform detection algorithm and publish 2D pixel coordinates of the center of the ball in both images into another topic (using ros geometry\_msgs::PointStamped message type), created for communication with the triangulation node. 
+The triangulation node calculates the 3D position of the ball and publishes the coordinates into a third topic (using ros geometry\_msgs::PointStamped message type) that the planner reads.
 
 #### Image Feature Detectors
 

@@ -17,6 +17,9 @@
 #include <ros/ros.h>
 #include <red_ball_detection/ballCentrum.h> // Created msg format
 #include <red_ball_detection/ballToRobotBase.h> // Created msg format
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/subscriber.h>
+#include <geometry_msgs/PointStamped.h>
 // OpenCV
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -58,25 +61,30 @@ class Stereopsis{
 		ros::Subscriber left_subs;
 		ros::Subscriber right_subs;
 		ros::Publisher pub;
-		float left0, left1;
-		float right0, right1;
-		//cv::Mat proj_l;
-		//cv::Mat proj_r;
+		
+		// Declare messages 		
+		geometry_msgs::PointStamped left2D;
+		geometry_msgs::PointStamped right2D;
+		geometry_msgs::PointStamped location3D;
+
+		StereoPair stPair;
+		cv::Mat proj_l, proj_r;
+		
+		//float left0, left1;
+		//float right0, right1;
+
 
 	public:
-		//vector<float> left;
-		//vector<float> right;
 		
 		Stereopsis(ros::NodeHandle nh, const string pub_topic_name);
-		void get_left_coordinates(const red_ball_detection::ballCentrum msg);
-		void get_right_coordinates(const red_ball_detection::ballCentrum msg);
-		vector<float> group_coordinates(ros::NodeHandle nh, const string sub_left, const string sub_right);
 
 		void loadCamFromStream(ifstream & input, Camera &cam);
-		bool readStereoCameraFile(const string & fileName, StereoPair &stereoPair);
+		bool readStereoCameraFile(const string & fileName);
 		cv::Mat constructProjectionMat(Camera cam);
+		void getProjectionMat();
 
-		vector<float> calculate_3D_location(vector<float> both, Mat proj_l, Mat proj_r);
-		void broadcast_3D_location(vector<float> point);
+		void calculate_3D_location(vector<float> both);
+		//void broadcast_3D_location(vector<float> point);
+		void synchronized_triangulation(const geometry_msgs::PointStamped::ConstPtr &image_left, const geometry_msgs::PointStamped::ConstPtr &image_right);
 
 };

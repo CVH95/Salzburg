@@ -12,6 +12,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <red_ball_detection/ballCentrum.h> // Created msg format
+#include <geometry_msgs/PointStamped.h>
 // OpenCV
 #include <opencv2/opencv.hpp>
 // Libs
@@ -37,21 +38,23 @@ int main(int argc, char** argv)
 
   	const string sub_topic_name = "/camera/right/image_raw";
 	const string pub_topic_name = "/red_ball_detection/right_image_coordinates";
-	const string pub_display = "/red_ball_detection/hsv_right_image";
+	//const string pub_display = "/red_ball_detection/hsv_right_image";
 	
 	// Use a while loop to control the refresh rate of the camera
-	while(ros::ok)
-	{	
+	//while(ros::ok)
+	//{	
 
 		// Call detector
-		ObstacleDetection DR(sub_topic_name, pub_topic_name, pub_display);
+		ObstacleDetection DR(sub_topic_name, pub_topic_name);//, pub_display);
 	
 		// Update stereo info each 0.5 seconds
-		ros::Duration(0.5).sleep();		
-  		ros::spinOnce();
+	//	ros::Duration(1.5).sleep();		
+  	//	ros::spinOnce();
 	
-	}// while
+	//}// while
   	
+	ros::spin();
+
 	return 0;
 
 } // main

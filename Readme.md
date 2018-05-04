@@ -1,6 +1,6 @@
 # ROVI 2 Final Project: OBJECT AVOIDANCE
 
-By Carlos, Richárd, Sergi and Mathesh.
+This project was developed during the course of Robotics and Computer Vision 2 (spring 2018), at University of Southern Denmark, by Carlos, Richárd, Sergi and Mathesh. The setup is a WorkCell composed by a UR5 robot arm mounted on a table with a BumbleBee 2 stereo camera mounted on a corner. The project consisted on an application for dynamic path planning capable of real time replanning when an obstacle is placed interrupting its route, from an initial configuration q\_start to a final one q\_end (like in a pick & place). As obstacle object we used an small red ball. 
 
 ## A. Download and build repository
 

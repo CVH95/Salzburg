@@ -18,50 +18,11 @@ Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 
 }// Stereopsis()
 
-
-
-// ROS callbacks to get ball image coordintes subscribing to the topic they are broadcasted in.
-void Stereopsis::get_left_coordinates(const red_ball_detection::ballCentrum msg)
-{
-	// cout << "Left image coordinates: " << msg << endl;
-	left0 = msg.data[0];
-	left1 = msg.data[1];
-
-}// get_left_coordinates()
-
-
-void Stereopsis::get_right_coordinates(const red_ball_detection::ballCentrum msg)
-{
-	// cout << "Right image coordinates: " << msg << endl;
-	right0 = msg.data[0];
-	right1 = msg.data[1];
-
-}// get_right_coordinates()
-
-
-
-// Grouping them all and clearing input vectors for next round
-vector<float> Stereopsis::group_coordinates(ros::NodeHandle nh, const string sub_left, const string sub_right)
-{
-	// Subscribers
-	left_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_left, 1, &Stereopsis::get_left_coordinates, this);
-	right_subs = nh.subscribe<red_ball_detection::ballCentrum>(sub_right, 1, &Stereopsis::get_right_coordinates, this);
-
-	vector<float> both;
-	
-	both.push_back(left0);
-	both.push_back(left1);
-	both.push_back(right0);
-	both.push_back(right1);
-
-	return both;
-
-}// group_coordinates()
-
-
 //--------------------------------------------------------------------------------------------------------
 
+
 // Calibration-related part
+
 
 // Builds Camera structure
 void Stereopsis::loadCamFromStream(ifstream & input, Camera &cam)
@@ -126,7 +87,7 @@ void Stereopsis::loadCamFromStream(ifstream & input, Camera &cam)
 
 
 // Reads Calibration file
-bool Stereopsis::readStereoCameraFile(const string & fileName, StereoPair &stereoPair)
+bool Stereopsis::readStereoCameraFile(const string & fileName)
 {
 
 	int number_of_cameras;
@@ -141,8 +102,8 @@ bool Stereopsis::readStereoCameraFile(const string & fileName, StereoPair &stere
 
 			Stereopsis::loadCamFromStream(ifs, cam1);
             		Stereopsis::loadCamFromStream(ifs, cam2);
-            		stereoPair.cam1 = cam1;
-            		stereoPair.cam2 = cam2;
+            		stPair.cam1 = cam1;
+            		stPair.cam2 = cam2;
             		return true;
 
         	}// if number_of_cameras
@@ -172,9 +133,18 @@ cv::Mat Stereopsis::constructProjectionMat(Camera cam)
 }// constructProjectionMat()
 
 
+void Stereopsis::getProjectionMat()
+{
+
+	proj_l = Stereopsis::constructProjectionMat(stPair.cam1);
+	proj_r = Stereopsis::constructProjectionMat(stPair.cam2);
+
+}// getProjectMat()
+
+
 
 // Compute the 3D location of the Ball (Using OpenCV triangulation).
-vector<float> Stereopsis::calculate_3D_location(vector<float> both, Mat proj_l, Mat proj_r)
+void Stereopsis::calculate_3D_location(vector<float> both)
 {
 	vector<float> location;
 
@@ -192,29 +162,51 @@ vector<float> Stereopsis::calculate_3D_location(vector<float> both, Mat proj_l, 
 	float y = (float) pnts3D.at<double>(1, 0) / pnts3D.at<double>(3, 0);
 	float z = (float) pnts3D.at<double>(2, 0) / pnts3D.at<double>(3, 0);
 
-	location.push_back(x);
-	location.push_back(y);
-	location.push_back(z);
+	// Broadcast triangulated points into the ROS network
+	
+	location3D.point.x = x;
+	location3D.point.y = y;
+	location3D.point.z = z;
 
+	pub.publish(Stereopsis::location3D);
 
-	return location;
 
 }//calculate_3D_location()
 
 
 
-
-
-// Call this function at the end to broadcast triangulated points into the ROS network
+/*// Call this function at the end to broadcast triangulated points into the ROS network
 void Stereopsis::broadcast_3D_location(vector<float> point)
 {
 
-	red_ball_detection::ballToRobotBase msg;
+	//red_ball_detection::ballToRobotBase msg;
 	
-	msg.data.push_back(point[0]);
-	msg.data.push_back(point[1]);
-	msg.data.push_back(point[2]);
+	pose_3D.data.push_back(point[0]);
+	pose_3D.data.push_back(point[1]);
+	pose_3D.data.push_back(point[2]);
+	
+	// Define timeStamp to synchronize publishing
+	pose_3D.header.stamp = ros::Time::now();
 
-	pub.publish(msg);
+	pub.publish(pose_3D);
 
-}// broadcast_3D_location()
+}// broadcast_3D_location()*/
+
+
+// Function that gets synchronized msgs from detectors and performs triangulation + broadcast
+void Stereopsis::synchronized_triangulation(const geometry_msgs::PointStamped::ConstPtr &image_left, const geometry_msgs::PointStamped::ConstPtr &image_right)
+{
+	left2D = *image_left;
+	right2D = *image_right;
+
+	vector<float> both;
+	both.push_back(left2D.point.x);
+	both.push_back(left2D.point.y);
+	both.push_back(right2D.point.x);
+	both.push_back(right2D.point.y);
+	
+	location3D.header.stamp = left2D.header.stamp;
+
+	Stereopsis::calculate_3D_location(both);
+	
+}// synchronized_triangulation()
