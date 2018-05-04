@@ -2,7 +2,7 @@
 
 By Carlos, Richárd, Sergi and Mathesh.
 
-## Download and build repository
+## A. Download and build repository
 
 ```sh
 $ cd ~/catkin_ws/src/
@@ -17,7 +17,7 @@ $ catkin_make
 
 RWStudio & Non-ROS programs have to b build individualy.
 
-## Robot connection setup.
+## B. Robot connection setup.
 
 ```sh
 $ sudo vim /etc/hosts
@@ -65,7 +65,7 @@ $ roscore
 $ roslaunch caros_universalrobot simple_demo_using_move_ptp.test
 ```
 
-## Network connection setup.
+## C. Network connection setup.
 
 #### On the Robot's computer:
 
@@ -94,7 +94,7 @@ $ export ROS_MASTER_URI=http://192.168.100.52:11311/
 $ export ROS_IP=192.168.100.25
 ```
 
-## Stereo Camera Connection.
+## D. Stereo Camera Connection.
 
 Installing the camera driver:
 
@@ -125,11 +125,11 @@ $ rosrun image_view image_view image:=/camera/right/image_raw
 $ rosrun image_view image_view image:=/camera/left/image_raw
 ```
 
-## USAGE.
+## E. USAGE.
 
 The following sections describe the main architecture of the application, each node's functionality and how to use each of them.
 
-#### 1. CAROS UNIVERSALROBOT.
+### 1. CAROS UNIVERSALROBOT.
 
 The main package. Launch the `caros_universalrobot.launch` to activate all the caros nodes, msgs and functionalities on which the Object Avoidance is based. Once all the robot and network connection setup is done, it is the first thing to launch:
 
@@ -137,7 +137,7 @@ The main package. Launch the `caros_universalrobot.launch` to activate all the c
 $ roslaunch caros_universalrobot caros_universalrobot.launch
 ```
 
-#### 2. UR Caros Example.
+### 2. UR Caros Example.
 
 Taken from the ROS Lecture exercise and slightly modified. Use it to set the robot in the initial position for the application. Remember to launch `caros_universalrobot.launch` first.
 
@@ -145,7 +145,7 @@ Taken from the ROS Lecture exercise and slightly modified. Use it to set the rob
 $ rosrun ur_caros_example ur_caros_example
 ```
 
-#### 3. Robot State Monitor.
+### 3. Robot State Monitor.
 
 This node simply subscribes to RobotSate's msgs to constantly monitor the state of the machine. Displays joint configuration, speed and moving status in the screen. To end this node's activity type ctrl+c in the terminal.
 
@@ -153,7 +153,7 @@ This node simply subscribes to RobotSate's msgs to constantly monitor the state 
 $ rosrun robot_state_monitoring robot_state_monitoring
 ```
 
-#### 4. Planner.
+### 4. Planner.
 
 The planner node is the main one in charge of path planning and robot motion. Some features to mention about its implementation:
 
@@ -163,3 +163,39 @@ The planner node is the main one in charge of path planning and robot motion. So
 ```sh
 $ rosrun planner planner
 ```
+
+### 5. Red Ball Detection.
+
+Several nodes compose this package in which all the vision part is implemented. The sensor used is a BumbleBee 2 stereo camera.
+
+ - Stereo Detection (for right and left images).
+ - Stereo triangulation of the real world coordinates of the red ball.
+ - Kalman Filter for ball's movement prediction.
+
+#### 5.1. Right/Left Stereo Detection.
+
+There are two nodes, one for each camera in the BumbleBee. As seen before, the sensor uses firewire connection, so it as to be plugged to the WorkStation computer. Therefore, before using it, it is required to export ROS MASTER URI and IP (`ROS_pkgs/export_master.sh`) to that of the WorkCell computer (sections C and D). These detectors are subscribed to both `image_raw` topics to get the input stream recorded by the camera. Then, after filtering the image and getting the coordinates of the ball, each of the nodes broadcast them into `red_ball_detection/right_image_coordinates` and `red_ball_detection/left_image_coordinates` topics.
+
+```sh
+$ rosrun stereo_detector_sinistro (left)
+$ rosrun stereo_detector_destro (right)
+```
+
+#### 5.2. Stereo Triangulation
+
+This node subscribes to the topics where detectors are publishing. Then, it calculates the 3D location by triangulating based on camera calibration parameters and pixel coordinates of the ball at both images. The 3D scene location of the ball (x, y, z real coordinates) are broadcasted then in the topic `/red_ball_detection/triangulated_ball_location`.
+
+```sh
+$ rosrun stereo_triangulation
+```
+
+#### 5.3. Kalman Filter
+
+
+#### 5.4. Launch files
+
+Two launch files are added to be able to run the detection nodes all at once and at the same time. One launches all the setup, while the other does not use the Kalman Filter.
+
+```sh
+$ roslaunch red_ball_detection static_detection.launch (no Kalman)
+``` 

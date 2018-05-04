@@ -1,0 +1,8 @@
+<launch>
+  <!-- pkg = "pkg_name" type="executable_name" name="node_name" -->
+  <!-- Detector nodes -->
+  <node pkg="red_ball_detection" type="stereo_detector_sinistro" name="Ball_detector_left_image" output="screen"> </node> 
+  <node pkg="red_ball_detection" type="stereo_detector_destro" name="Ball_detector_right_image" output="screen"> </node>
+  <!-- Triangulation node --> 
+  <node pkg="red_ball_detection" type="stereo_triangulation" name="Scene_3D_triangulation" output="screen"> </node>
+</launch>

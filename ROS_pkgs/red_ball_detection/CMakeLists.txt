@@ -38,6 +38,7 @@ include_directories( ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} include)
 
 # Shared Libraries
 add_library(ObstacleDetection SHARED src/ObstacleDetection.cpp)
+add_library(Stereopsis SHARED  src/Stereopsis.cpp)
 
 # Build Detector (Right image) Node
 add_executable(stereo_detector_destro src/detector_right_image.cpp)
@@ -48,6 +49,12 @@ add_executable(stereo_detector_sinistro src/detector_left_image.cpp)
 target_link_libraries( stereo_detector_sinistro ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 
 # Build Stereo Triangulation Node
-add_executable(stereo_triangulation src/triangulation.cpp)
-target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
+# add_executable(stereo_triangulation src/triangulation.cpp src/methods.hpp)
+add_executable(stereo_triangulation src/triangulation.cpp )
+target_link_libraries( stereo_triangulation ObstacleDetection Stereopsis ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
+#target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 
+# Install Launch files
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  PATTERN ".svn" EXCLUDE)

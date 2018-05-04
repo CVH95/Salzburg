@@ -1,8 +1,8 @@
-# TO DO LIST (27.04.2018)
+# TO DO LIST (02.05.2018)
 
 #### ROS shit 
 
-- Complete triangulation node.
+- Implement the control loop (decide how much time to update camera infoand this stuff).
 - Add Kalman Filter node.
 
 #### NON-ROS shit

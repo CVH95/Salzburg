@@ -39,9 +39,19 @@ int main(int argc, char** argv)
 	const string pub_topic_name = "/red_ball_detection/left_image_coordinates";
 	const string pub_display = "/red_ball_detection/hsv_left_image";
 
-	ObstacleDetection DL(sub_topic_name, pub_topic_name, pub_display);
+	// Use a while loop to control the refresh rate of the camera
+	while(ros::ok)
+	{	
+
+		// Call detector
+		ObstacleDetection LR(sub_topic_name, pub_topic_name, pub_display);
 	
-  	ros::spin();
+		// Update stereo info each 0.5 seconds
+		ros::Duration(0.5).sleep();		
+  		ros::spinOnce();
+	
+	}// while
+
   	return 0;
 
 } // main
