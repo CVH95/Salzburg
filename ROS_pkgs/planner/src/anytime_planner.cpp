@@ -1,10 +1,25 @@
-// ROVI2 - Object avoidance: Planner node
+// ROVI2 - Object avoidance: Anytime Planner node
 
 // Q_start   --->   Q[6]{-1.04475, -1.78024, -2.24013, -0.781733, 1.61513, 0.0356047} (rad)
 // Q_goal    --->   Q[6]{2.64138, -1.68337, -1.87675, -2.10958, 4.75969, 0.0352557} (rad)
 
+/*
+	
+	1. Loop.
+		2. Initialize(T, q_initial, q_goal)
+		3. path = planRRT(T)
+		4. PostSolution(path)
+		5. obstacles = findObstacles()
+		6. for all obs found do:
+			7. InvalidateNodes(T, obs)
+		8. if path constains invalid nodes
+			9. path = replanRRT(T)
+			10. PostSolution(path)
+		11. UpdateParameters(T).
+*/
+
 #include <AnytimePlanning.h>
-#include <URRobot.h>
+//#include <URRobot.h>
 
 #include <iostream>
 #include <fstream> 
@@ -27,6 +42,8 @@
 #include <caros/serial_device_si_proxy.h>
 #include <caros/common_robwork.h>
 #include "caros_control_msgs/SerialDeviceMoveServoQ.h"
+#include <geometry_msgs/PointStamped.h>
+#include <std_msgs/Bool.h>
 //#include <caros/ur_service_interface.h>
 
 
@@ -40,24 +57,25 @@ using namespace std;
 
 int main(int argc, char** argv) 
 {
-	ros::init(argc, argv, "planner");
+	ros::init(argc, argv, "anytime_planner");
 	ros::NodeHandle nh;
-
-	cout << "Ready to start" << endl;
-	cout << endl;
-	ros::Duration(3).sleep();
-
-
-	// LOADING WORKCELL & INITIAL SETTINGS
 	
+	// Files
 	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";
 	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
+	const string filename = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/plan.txt";
+
+	// Topics
+	const string scene = "/red_ball_detection/triangulated_ball_location";
+	const string stat = "/planner/collisions";
+
 
 	// Created object of the class URRobot with corresponding argument (ros::NodeHandle).
-	URRobot ur2(nh);
-	cout << "UR5's actual configuration:  " <<  ur2.getQ() << endl;
-	cout << endl;
+        //URRobot ur2(nh);
+
+
+	// INITIALIZE
 
 	// Created object of the class AnytimePlanning.
 	AnytimePlanning plan;
@@ -84,30 +102,15 @@ int main(int argc, char** argv)
 
 
 
-	// PATH PLANNING
+	// PLANNING
+	QPath path = plan.get_path(epsilon, from, to);
+	plan.save_path(filename, path);
+	QPath trajectory = plan.get_trajectory(path, dq_start, dq_end);
 
-	// Calculate path using RRT* algorithm
-	QPath raw_path = plan.get_path(epsilon, from, to);
-	// Interpolate the obtained path to create a smooth trajectory
-	QPath trajectory = plan.get_trajectory(raw_path, dq_start, dq_end);
-	// Get trajectory to go back to q_start
-	QPath bw_trajectory = plan.return_path(bw_file);
+	plan.dynamic_trajectory(nh, trajectory, epsilon, ur_client, srv, stat, to, dq_start, dq_end, filename);
 	
-	// SEND (NUDES) PATH
+	ros::spin();
+	return 0;
 
-	plan.send_trajectory(ur_client, srv, trajectory);
-
-	cout << "Trajectory completed. Preparing to go back to the starting configuration." << endl;
-	ros::Duration(3).sleep(); // Sleep for one and a half seconds (Does ROS operates in seconds or miliseconds?)
-
-
-	plan.send_trajectory(ur_client, srv, bw_trajectory);
+}// main()
 	
-	cout << "Program completed successfully. Preparing to exit.... (ctrl+c)" << endl;
-	ros::Duration(3).sleep();
-		
-	//ros::spinOnce(); ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
-	ros::spin(); //The program will be finished with 'ctrl+c' keyboard interrupt.
- 	return 0;
-
-} // main()
