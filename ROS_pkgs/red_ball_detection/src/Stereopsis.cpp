@@ -19,15 +19,13 @@ Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 }// Stereopsis()
 
 
-
-
-
 // Grouping them all and clearing input vectors for next round
 vector<float> Stereopsis::group_coordinates(
-	ros::NodeHandle nh,
-	const geometry_msgs::PointStamped::ConstPtr &left_subs,
-	const geometry_msgs::PointStamped::ConstPtr &right_subs)
+	const red_ball_detection::ballCentrum left_subs,
+	const red_ball_detection::ballCentrum right_subs)
 {
+	float left0, left1;
+	float right0, right1;
 	left0 = left_subs.data[0];
 	left1 = left_subs.data[1];
 	right0 = right_subs.data[0];

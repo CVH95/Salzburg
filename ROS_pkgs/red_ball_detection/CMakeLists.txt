@@ -49,7 +49,7 @@ add_executable(stereo_detector_sinistro src/detector_left_image.cpp)
 target_link_libraries( stereo_detector_sinistro ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 
 # Build Stereo Triangulation Node
-# add_executable(stereo_triangulation src/triangulation.cpp src/methods.hpp)
+# add_executable(stereo_triangulation src/triangulation.cpp)
 add_executable(stereo_triangulation src/triangulation.cpp )
 target_link_libraries( stereo_triangulation ObstacleDetection Stereopsis ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 #target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
@@ -58,3 +58,7 @@ target_link_libraries( stereo_triangulation ObstacleDetection Stereopsis ${catki
 install(DIRECTORY launch/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
   PATTERN ".svn" EXCLUDE)
+
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+add_dependencies(stereo_triangulation stereo_triangulation_generate_messages_cpp)
