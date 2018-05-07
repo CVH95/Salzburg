@@ -8,8 +8,8 @@
 
 
 
-#define deviceName "UR1"
-#define workcellPath "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2"
+//#define deviceName "UR1"
+//#define workcellPath "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2"
 
 using namespace rw::common;
 using namespace rw::kinematics;
@@ -18,6 +18,8 @@ using namespace rw::sensor;
 
 using namespace rws;
 
+const string workcellPath = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml";
+const string deviceName = "UR1";
 
 RobotPlugin::RobotPlugin():
     RobWorkStudioPlugin("Obstacle Avoidance", QIcon(":/5-512.png"))
@@ -71,9 +73,11 @@ void RobotPlugin::initialize()
 {
         getRobWorkStudio()->stateChangedEvent().add(boost::bind(&RobotPlugin::stateChangedListener, this, _1), this);
 
+	plan.Load_WorkCell(workcellPath, deviceName);
+
         // Auto load workcell
-        rw::models::WorkCell::Ptr wc = rw::loaders::WorkCellLoader::Factory::load(workcellPath);
-        getRobWorkStudio()->setWorkCell(wc);
+        //rw::models::WorkCell::Ptr wc = rw::loaders::WorkCellLoader::Factory::load(workcellPath);
+       // getRobWorkStudio()->setWorkCell(plan.wc);
 }
 
 void RobotPlugin::open(WorkCell* workcell)
@@ -83,6 +87,10 @@ void RobotPlugin::open(WorkCell* workcell)
 	_state = _wc->getDefaultState();
         _device = _wc->findDevice(deviceName);
 
+	// Add red ball model and move it to some initial position
+		
+	//plan.add_red_ball(0.5);
+	//plan.move_red_ball(0.0, 0.0, 0.0);
 }
 
 

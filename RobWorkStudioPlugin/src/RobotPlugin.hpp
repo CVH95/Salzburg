@@ -30,7 +30,8 @@ public:
 	virtual void close();
 
 	virtual void initialize();
-
+	
+	AnytimePlanning plan;
 
 private slots:
 	void btnPressed();
@@ -51,6 +52,7 @@ private:
 	rw::models::WorkCell::Ptr _wc;
 	rw::kinematics::State _state;
         rw::models::Device::Ptr _device;
+
 
 
 };

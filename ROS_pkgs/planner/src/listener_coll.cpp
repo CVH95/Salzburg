@@ -17,11 +17,15 @@
 using namespace std;
 
 
-void callback(const std_msgs::Bool::ConstPtr &msg)
+void callback(const std_msgs::Bool::ConstPtr& msg)
 {
 
-	cout << "Found Collisions?   " << msg->data << endl;
-
+	cout << "Found Collisions?   " << endl;
+	bool s = msg->data;
+	if ( s == true)
+		{cout << "YES" << endl;}
+	else
+		{cout << "NO" << endl;}
 }//callback()
 
 
@@ -30,7 +34,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "collision_detector_test_listener");
 	ros::NodeHandle nh;
 
-	ros::Subscriber sub = nh.subscribe<std_msgs::Bool>("/planner/collisions", 1, callback);
+	ros::Subscriber sub = nh.subscribe<std_msgs::Bool>("/planner/collisions", 1, &callback);
 
 	ros::spin();
 	return 0;

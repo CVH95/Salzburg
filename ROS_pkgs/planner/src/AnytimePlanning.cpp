@@ -48,6 +48,9 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> Found device: " << dev_name << endl;
 
 	state = wc->getDefaultState();
+	
+	
+
 	AnytimePlanning::add_red_ball(0.5);
 	
 	// See if the obstacle was found
@@ -61,7 +64,7 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> Red Ball created and added succesfully to the WorkCell." << endl;
 	
 	// Set the ball in a starting position
-	AnytimePlanning::move_red_ball(0.0, 0.0, 0.0);
+	AnytimePlanning::move_red_ball(650.0, 650.0, 650.0);
 
 }// Load_WorkCell()
 
@@ -244,19 +247,21 @@ void AnytimePlanning::move_red_ball(float X, float Y, float Z)
 
 
 // Function that gets the coordinates of the ball from ROS network.
-void AnytimePlanning::ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg )
+/*void AnytimePlanning::ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg )
 {
 
 	AnytimePlanning::move_red_ball(msg->point.x, msg->point.y, msg->point.z);
+	cout << "Ball in position:   (" << msg->point.x << ", " << msg->point.y << ", " << msg->point.z << ")" << endl;
 
 
 }// ball_location_callback
+*/
 
 
-
-void AnytimePlanning::find_obstacles(ros::NodeHandle nh, const string topic)
+void AnytimePlanning::find_obstacles(float x, float y, float z)
 {
-	ros::Subscriber sub = nh.subscribe(topic, 1, &AnytimePlanning::ball_location_callback, this);
+//	ros::Subscriber sub = nh.subscribe(topic, 1, &AnytimePlanning::ball_location_callback, this);
+	AnytimePlanning::move_red_ball(x, y, z);
 	state = wc->getDefaultState();
 		
 
@@ -265,10 +270,10 @@ void AnytimePlanning::find_obstacles(ros::NodeHandle nh, const string topic)
 
 
 
-bool AnytimePlanning::invalidate_nodes(QPath path, ros::NodeHandle nh, const string topic)
+bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 {
-
-	AnytimePlanning::find_obstacles(nh, topic);
+	cout << "Checking path..." << endl;
+	AnytimePlanning::find_obstacles(x, y, z);
 	// Set collision detection strategy.
 	CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
 	bool colliding;
@@ -300,17 +305,18 @@ QPath AnytimePlanning::get_path(double epsilon, rw::math::Q from, rw::math::Q to
 
 	// Set collision detection strategy.
 	CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
-
+	
 	// Set the planner constraint to build RRT-connect.
 	PlannerConstraint constraint = PlannerConstraint::make(&detector, device, state); 
 	QSampler::Ptr sampler = QSampler::makeConstrained(QSampler::makeUniform(device),constraint.getQConstraintPtr());
 	QMetric::Ptr metric = MetricFactory::makeEuclidean<Q>();
 
+
 	// Check for collisions at initial configuration.
-	if (!AnytimePlanning::checkCollisions(state, detector, from))
+	if (AnytimePlanning::checkCollisions(state, detector, from) == true)
 		{return 0;}
 	// Check for collisions at final configuration.
-	if (!AnytimePlanning::checkCollisions(state, detector, to))
+	if (AnytimePlanning::checkCollisions(state, detector, to) == true)
 		{return 0;}
 
 	/*if(ext1 == true || ext2 == true)
@@ -331,20 +337,6 @@ QPath AnytimePlanning::get_path(double epsilon, rw::math::Q from, rw::math::Q to
 	cout << "	>> Path's length: " << path.size() << endl;
 	cout << "	>> Computation time: " << t.getTime() << " seconds." << endl;
 	cout << endl;
-
-	// Saving original plan
-	int j = 0;
-	ofstream pf;
-	pf.open("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_original.txt");
-	for (QPath::iterator it = path.begin(); it < path.end(); it++) 
-	{
-		pf << j << ":  " << *it << endl;
-		j++;	
-	} // for
-	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_original.txt" << endl;
-	cout << endl;
-	
-	pf.close();
 
 	return path;
 
@@ -473,41 +465,59 @@ void AnytimePlanning::dynamic_trajectory(ros::NodeHandle nh, QPath path, double 
 					Q dq0, Q dq1, const string filename)
 {	
 	URRobot UR5(nh);
-
-	ros::Subscriber sub = nh.subscribe<std_msgs::Bool>(bool_t_n, 1, &AnytimePlanning::collision_callback, this);
+	rw::math::Q currentQ = UR5.getQ();
+	cout << "CurrentQ = " << currentQ << endl;
+	//ros::Subscriber sub = nh.subscribe<std_msgs::Bool>(bool_t_n, 1, &AnytimePlanning::collision_callback, this);
 	
-	while(collision_status == false)
+	while(currentQ != goal) 
 	{
-		
-		for (const rw::math::Q& p : path)
+
+		ros::Subscriber sub = nh.subscribe<std_msgs::Bool>(bool_t_n, 1, &AnytimePlanning::collision_callback, this);
+
+		if(collision_status == false)
 		{
-			// This should be able to move the robot
-			
-			caros_common_msgs::Q q;
-			q = caros::toRos(p);
-			srv.request.targets.push_back(q);
-    			srv.request.speeds.push_back(0.001);
-
-			if (client.call(srv))
+			cout << "Collision status = FALSE" << endl;
+			//ros::Duration(0.5).sleep();
+			for (const rw::math::Q& p : path)
 			{
-				ROS_INFO("CAROS_MOVE_SERVO_Q RESPONSE: %d", srv.response.success);
-			}// if
-			else	
-			{
-				ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
-			}// else
+				// This should be able to move the robot
+				
+				caros_common_msgs::Q q;
+				q = caros::toRos(p);
+				srv.request.targets.push_back(q);
+    				srv.request.speeds.push_back(0.001);
 
-		}// for
-
-	}// while
-
-	if(collision_status == true)
-	{
-
-		rw::math::Q q_now = UR5.getQ();
-		QPath new_path = AnytimePlanning::replan(q_now, goal, dq0, dq1, filename, e);
-		AnytimePlanning::dynamic_trajectory(nh, new_path, e, client, srv, bool_t_n, goal, dq0, dq1, filename);
+				if (client.call(srv))
+				{
+					ROS_INFO("CAROS_MOVE_SERVO_Q RESPONSE: %d", srv.response.success);
+				}// if
+				else	
+				{
+					ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
+				}// else
 	
-	}// if inCollision
+				currentQ = p;
+
+			}// for
+	
+		}// while collision_status
+
+		if(collision_status == true)
+		{
+
+			rw::math::Q q_now = UR5.getQ();
+			QPath new_path = AnytimePlanning::replan(q_now, goal, dq0, dq1, filename, e);
+			AnytimePlanning::dynamic_trajectory(nh, new_path, e, client, srv, bool_t_n, goal, dq0, dq1, filename);
+	
+		}// if inCollision
+		
+		ros::Duration(1).sleep();
+	}
+	//else
+	//{
+
+		cout << "Trajectory finished" << endl;
+
+	//}
 
 }//dynamic_trajectory()

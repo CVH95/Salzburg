@@ -55,8 +55,13 @@ using namespace rwlibs::proximitystrategies;
 class AnytimePlanning{
 
   public: 
-	
-	// Generañ
+	// Variables
+	rw::models::WorkCell::Ptr wc;
+	Device::Ptr device;
+	State state;
+	Object::Ptr obstacle;	
+
+	// General
 	void Load_WorkCell(const string wc_name, const string dev_name);
 	bool checkCollisions(const State &state, const CollisionDetector &detector, const Q &q);
 	void save_path(const string filename, QPath path);
@@ -65,9 +70,9 @@ class AnytimePlanning{
 	// Obstacle related
 	void add_red_ball(double radius);
 	void move_red_ball(float X, float Y, float Z);
-	void ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg );
-	void find_obstacles(ros::NodeHandle nh, const string topic);
-	bool invalidate_nodes(QPath path, ros::NodeHandle nh, const string topic);
+	//void ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg );
+	void find_obstacles(float x, float y, float z);
+	bool invalidate_nodes(QPath path, float x, float y, float z);
 
 	// Path-Planning related
 	QPath get_path(double epsilon, rw::math::Q from, rw::math::Q to);
@@ -84,10 +89,7 @@ class AnytimePlanning{
   private: 
 	/*const string wc_name;
 	const string dev_name;*/
-	rw::models::WorkCell::Ptr wc;
-	Device::Ptr device;
-	State state;
-	Object::Ptr obstacle;
+		
 	bool dev_found;
 	bool wc_found;
 	rw::pathplanning::QToQPlanner::Ptr planner;

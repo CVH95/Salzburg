@@ -60,6 +60,8 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "anytime_planner");
 	ros::NodeHandle nh;
 	
+	rw::math::Math::seed();
+
 	// Files
 	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";

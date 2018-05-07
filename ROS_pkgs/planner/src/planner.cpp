@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
 	cout << "Ready to start" << endl;
 	cout << endl;
-	ros::Duration(3).sleep();
+	ros::Duration(0.5).sleep();
 
 
 	// LOADING WORKCELL & INITIAL SETTINGS
@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";
 	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
+	const string pathFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/plan.txt";
 
 	// Created object of the class URRobot with corresponding argument (ros::NodeHandle).
 	URRobot ur2(nh);
@@ -82,14 +83,16 @@ int main(int argc, char** argv)
 	ros::ServiceClient ur_client = nh.serviceClient<caros_control_msgs::SerialDeviceMoveServoQ>("/caros_universalrobot/caros_serial_device_service_interface/move_servo_q");
 	caros_control_msgs::SerialDeviceMoveServoQ srv;
 
-
-
 	// PATH PLANNING
 
 	// Calculate path using RRT* algorithm
 	QPath raw_path = plan.get_path(epsilon, from, to);
 	// Interpolate the obtained path to create a smooth trajectory
 	QPath trajectory = plan.get_trajectory(raw_path, dq_start, dq_end);
+	cout << "trajectory ready" << endl;
+
+	plan.save_path(pathFile, raw_path);
+	cout << "path saved" << endl;
 	// Get trajectory to go back to q_start
 	QPath bw_trajectory = plan.return_path(bw_file);
 	

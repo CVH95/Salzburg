@@ -14,7 +14,7 @@ using namespace cv;
 Stereopsis::Stereopsis(ros::NodeHandle nh, const string pub_topic_name)
 {		
 	// Publisher	
-	pub = nh.advertise<red_ball_detection::ballToRobotBase>(pub_topic_name, 1);
+	pub = nh.advertise<geometry_msgs::PointStamped>(pub_topic_name, 1);
 
 }// Stereopsis()
 
@@ -169,7 +169,7 @@ void Stereopsis::calculate_3D_location(vector<float> both)
 	location3D.point.z = z;
 
 	pub.publish(Stereopsis::location3D);
-
+	cout << "x = " << x << ",  y = " << y << ",  z = " << z << endl;
 
 }//calculate_3D_location()
 
