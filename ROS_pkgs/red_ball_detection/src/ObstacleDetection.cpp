@@ -6,21 +6,21 @@ using namespace std;
 
 // This is the object constructor for the class ObstacleDetection. When the object is created in the main, it requires a ros::NodeHandle argument.
 // See definition in detector.cpp
-ObstacleDetection::ObstacleDetection(const string sub_topic_name, const string pub_topic_name) : itp(nh_)
+ObstacleDetection::ObstacleDetection(const string sub_topic_name, const string pub_topic_name, const string pub_display) : itp(nh_)
 {
 	
 	// Subscribe to camera Image (right or left) 
 	img_subscriber = itp.subscribe(sub_topic_name, 1, &ObstacleDetection::cv_ros_iface, this);
 
 	// Create publisher to display image (for debugging, no need in the final application)
-	//img_publisher = itp.advertise(pub_display, 1);
+	img_publisher = itp.advertise(pub_display, 1);
 	
 	// Create Publisher and topic to broadcast image coordinates of the ball in the form of rosmsg [/red_ball_detection/ballCentrum]
 	pub_coord = nh_.advertise<geometry_msgs::PointStamped>(pub_topic_name ,1);
 
 	// Create OpenCV Window to display
-	//OPENCV_WINDOW = pub_display;
-	//cv::namedWindow(OPENCV_WINDOW);
+	OPENCV_WINDOW = pub_display;
+	cv::namedWindow(OPENCV_WINDOW);
 
 } // ObstacleDetection()
 
@@ -66,7 +66,7 @@ void ObstacleDetection::cv_ros_iface(const sensor_msgs::ImageConstPtr& msg)
 		ObstacleDetection::find_ball(cv_ptr->image, im);
 		
 		// Publish thresholded image (debugging)
-    		//img_publisher.publish(cv_ptr->toImageMsg());
+    		img_publisher.publish(cv_ptr->toImageMsg());
 
 	} // if
 
@@ -115,7 +115,7 @@ void ObstacleDetection::find_ball(cv::Mat img, const sensor_msgs::ImageConstPtr&
 	Mat element = getStructuringElement(MORPH_ELLIPSE, Size(m_size+1, m_size+1), Point(m_size,m_size));
 	morphologyEx(RedBall, RedBall, MORPH_OPEN, element, Point(-1,-1), 6);
 
-	//imshow(OPENCV_WINDOW, RedBall);
+	imshow(OPENCV_WINDOW, RedBall);
 	waitKey(1);
 	
 	vector<vector<Point> > contours;
@@ -143,7 +143,7 @@ void ObstacleDetection::find_ball(cv::Mat img, const sensor_msgs::ImageConstPtr&
 		//cout<< "center = " << i << ":  [" << center[i].x << ", " << center[i].y << "]" << endl;
 	}// for
 	
-	//imshow("Detected Ball", Box);
+	imshow("Detected Ball", Box);
 	
 	// Some additional coding to convert vector<Point2f> center into float64[2] (and filter false positives)
 	if (center.size() == 0)

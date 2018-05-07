@@ -31,17 +31,17 @@ class ObstacleDetection {
 
 	// Publisher & Subscriber for images:
 	image_transport::Subscriber img_subscriber;
-	//image_transport::Publisher img_publisher;
+	image_transport::Publisher img_publisher;
 
 	// Obstacle 2D image coordinates Publisher
 	ros::Publisher pub_coord;
 
 	// Variables for the detector
-	//string OPENCV_WINDOW;
+	string OPENCV_WINDOW;
 
   public:
 	
-	ObstacleDetection(const string sub_topic_name, const string pub_topic_name);//, const string pub_display);
+	ObstacleDetection(const string sub_topic_name, const string pub_topic_name, const string pub_display);
 	//~ObstacleDetection();
 	void cv_ros_iface(const sensor_msgs::ImageConstPtr& msg);
 	void track_low_h(int,void*);
