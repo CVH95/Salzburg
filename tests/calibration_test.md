@@ -182,3 +182,14 @@ x = -253.961,  y = -462.411,  z = 126
 x = -253.961,  y = -462.411,  z = 126
 
 ```
+
+### Positions:
+
+##### Initial position of the object:
+
+![alt text](calibTest_screenshot_07.05.2018.png)
+
+
+##### Final position of the object:
+
+![alt text](calibTest_screenshot_07.05.2018_2.png)
