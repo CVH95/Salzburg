@@ -42,7 +42,9 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "planner");
 	ros::NodeHandle nh;
-
+	
+	rw::math::Math::seed();
+	
 	cout << "Ready to start" << endl;
 	cout << endl;
 	ros::Duration(0.5).sleep();
@@ -92,6 +94,7 @@ int main(int argc, char** argv)
 	cout << "trajectory ready" << endl;
 
 	plan.save_path(pathFile, raw_path);
+	plan.save_path("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/trajectory.txt", trajectory);
 	cout << "path saved" << endl;
 	// Get trajectory to go back to q_start
 	QPath bw_trajectory = plan.return_path(bw_file);

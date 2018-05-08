@@ -33,7 +33,7 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	wc = WorkCellFactory::load(wc_name);
 	if (wc == NULL) 
 	{
-		cerr << "WorkkCell: " << wc_name << " not found!" << endl;
+		cerr << "WorkCell: " << wc_name << " not found!" << endl;
 		wc_found = false;
 	} // if	
 
@@ -46,12 +46,10 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	} // if
 
 	cout << "	>> Found device: " << dev_name << endl;
-
-	state = wc->getDefaultState();
 	
-	
+	state = wc->getDefaultState();	
 
-	AnytimePlanning::add_red_ball(0.5);
+	AnytimePlanning::add_red_ball(1000);
 	
 	// See if the obstacle was found
 	obstacle = wc->findObject("RedBall");
@@ -60,11 +58,20 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 		cerr << "Red Ball not found in the WorkCell!" << endl;
 		dev_found = false;
 	} // if
+	rw::kinematics::MovableFrame *b = (MovableFrame *)wc->findFrame("RedBall");
+	rw::math::Transform3D<double> bT = b->getTransform(state);
+	cout << "	>> Red Ball created and added succesfully to the WorkCell." << endl;	
+	cout << "	>> Created in: " << bT << endl;
 
-	cout << "	>> Red Ball created and added succesfully to the WorkCell." << endl;
+	state = wc->getDefaultState();
+		
+	// Set the ball in a starting position (randomly chosen)
+	AnytimePlanning::move_red_ball(-232.8, -391.867, 101.732);
 	
-	// Set the ball in a starting position
-	AnytimePlanning::move_red_ball(650.0, 650.0, 650.0);
+	rw::kinematics::MovableFrame *ballFrame = (MovableFrame *)wc->findFrame("RedBall");
+	rw::math::Transform3D<double> ballT = ballFrame->getTransform(state);	
+	cout << "	>> Transform3D of " << ballFrame << ":" << endl;
+	cout << "	>> " << ballT << endl << endl;
 
 }// Load_WorkCell()
 
@@ -204,10 +211,9 @@ void AnytimePlanning::add_red_ball(double radius)
 	
 	// Adding frames to workcell: from ROVI1 project
 	const string ball = "RedBall";
-	const string child_of = "WORLD";
-
+	
 	ball_frame = new rw::kinematics::MovableFrame(ball);
-	rw::kinematics::Frame* parent = wc->findFrame(child_of);
+	rw::kinematics::Frame* parent = device->getBase();
 	wc->addFrame(ball_frame, parent);
 	
 	// Update state in the workcell to finally add the frame
@@ -233,47 +239,45 @@ void AnytimePlanning::move_red_ball(float X, float Y, float Z)
 	double y = (double) Y;
 	double z = (double) Z;
 
-	rw::kinematics::Frame* Ref = device->getBase();
+	
 	rw::math::Transform3D<double> ballToBase;
 	ballToBase.P() = rw::math::Vector3D<double>(x, y, z);
+	cout << ballToBase.P() << endl;
 	rw::math::RPY<double> rpy = rw::math::RPY<double>(0, 0, 0);
 	ballToBase.R() = rpy.toRotation3D();
-	// void moveTo 	( const math::Transform3D<> &  transform, Frame *refframe, State &  state ) 
-	// Changes the transform in the state, such that the movable frame is located in the transform which is described relative to refframe.
-	ball_frame->moveTo(ballToBase, Ref, state); 
+
+	//cout << "Transform3D of the ball relative to device->getBase():   " << ballToBase << endl;
+
+	ball_frame->setTransform(ballToBase, state);
+	
+	//ball_frame->moveTo(ballToBase, state); 
 
 
 }// move_red_ball()
 
 
-// Function that gets the coordinates of the ball from ROS network.
-/*void AnytimePlanning::ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg )
-{
-
-	AnytimePlanning::move_red_ball(msg->point.x, msg->point.y, msg->point.z);
-	cout << "Ball in position:   (" << msg->point.x << ", " << msg->point.y << ", " << msg->point.z << ")" << endl;
 
 
-}// ball_location_callback
-*/
-
-
-void AnytimePlanning::find_obstacles(float x, float y, float z)
-{
-//	ros::Subscriber sub = nh.subscribe(topic, 1, &AnytimePlanning::ball_location_callback, this);
-	AnytimePlanning::move_red_ball(x, y, z);
-	state = wc->getDefaultState();
-		
-
-}// find_obstacles()
-
-
-
-
+// Function to check collisions
 bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 {
-	cout << "Checking path..." << endl;
-	AnytimePlanning::find_obstacles(x, y, z);
+	//AnytimePlanning::find_obstacles(x, y, z);
+	state = wc->getDefaultState();
+
+	double X = (double) x;
+	double Y = (double) y;
+	double Z = (double) z;
+
+	rw::kinematics::MovableFrame *ball = (MovableFrame *) wc->findFrame("RedBall");
+	if (ball == NULL)
+		{ cout << "RedBall Frame not found." << endl; }
+
+	AnytimePlanning::move_red_ball(X, Y, Z);
+	
+	//state = wc->getDefaultState();
+
+	cout << "	>> RedBall:   " <<  ball_frame->getTransform(state) << endl;
+
 	// Set collision detection strategy.
 	CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
 	bool colliding;
@@ -294,6 +298,63 @@ bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 	return false;
 
 }// invalidate_nodes()
+
+
+//Callback function
+void AnytimePlanning::ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg)
+{
+	float x = msg->point.x;
+	float y = msg->point.y;
+	float z = msg->point.z;
+	
+	// // Create timer to get runtime 
+	long countdown = 5000; // miliseconds
+	rw::common::Timer timer = rw::common::Timer(countdown);
+	timer.resetAndPause(); 
+
+	QPath exp_path = AnytimePlanning::read_path("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/trajectory.txt");
+
+	timer.resetAndResume(); // Start timer
+
+	//std_msgs::Bool msg;
+	bool inCollision = AnytimePlanning::invalidate_nodes(exp_path, x, y, z);
+
+	double time_past = timer.getTime();
+	timer.resetAndPause();
+
+	cout << "	>> Path checked in " << time_past << " seconds." << endl << endl;
+	
+	if( inCollision == true )
+	{
+		std_msgs::Bool msg;
+		msg.data = true;
+		// Send collision status to anytime_planner to stop the current path and do replanning
+		booleanPub.publish(msg);
+		// Send current Q of the robot?
+
+	}// if
+
+	else 
+	{
+		std_msgs::Bool msg;
+		msg.data = false;
+		booleanPub.publish(msg);	
+	
+	}// else
+
+
+}// ball_location_callback
+
+
+// Executing all the find obstacles routine
+void AnytimePlanning::find_obstacles(ros::NodeHandle nh)
+{
+	
+	ros::Subscriber subs = nh.subscribe( "/red_ball_detection/triangulated_ball_location", 1, &AnytimePlanning::ball_location_callback, this);
+
+	ros::spin();
+
+}// find_obstacles()
 
 
 
@@ -369,7 +430,7 @@ QPath AnytimePlanning::get_trajectory(QPath path, rw::math::Q dq_start, rw::math
 
 	cout << "	>> Trajectory duration: " << tn << " seconds." << endl;
 	
-	for (double t = t0; t <= tn; t += 0.01) 
+	for (double t = t0; t <= tn; t += 0.05) 
 	{
 		// Conversion to save to .lua file
 		rw::math::Q q_i(6, traj->x(t)[0], traj->x(t)[1], traj->x(t)[2], traj->x(t)[3], traj->x(t)[4], traj->x(t)[5] );  
@@ -378,7 +439,7 @@ QPath AnytimePlanning::get_trajectory(QPath path, rw::math::Q dq_start, rw::math
 
 	} // for
 	cout << "	>> Trajectory length: " << interpolated_path.size() << " nodes." << endl;
-	cout << "	>> Saved with time steps of 0.01 seconds." << endl;
+	cout << "	>> Saved with time steps of 0.05 seconds." << endl;
 	cout << endl;
 	cout << "Saved to /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/RWStudio/genfiles/path_interpolated.txt" << endl;
 	cout << endl;

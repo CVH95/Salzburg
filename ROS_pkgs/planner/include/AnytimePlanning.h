@@ -60,6 +60,9 @@ class AnytimePlanning{
 	Device::Ptr device;
 	State state;
 	Object::Ptr obstacle;	
+	rw::kinematics::MovableFrame* ball_frame;
+	bool collision_status;
+	ros::Publisher booleanPub;
 
 	// General
 	void Load_WorkCell(const string wc_name, const string dev_name);
@@ -70,9 +73,9 @@ class AnytimePlanning{
 	// Obstacle related
 	void add_red_ball(double radius);
 	void move_red_ball(float X, float Y, float Z);
-	//void ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg );
-	void find_obstacles(float x, float y, float z);
 	bool invalidate_nodes(QPath path, float x, float y, float z);
+	void ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg);
+	void find_obstacles(ros::NodeHandle nh);
 
 	// Path-Planning related
 	QPath get_path(double epsilon, rw::math::Q from, rw::math::Q to);
@@ -93,10 +96,10 @@ class AnytimePlanning{
 	bool dev_found;
 	bool wc_found;
 	rw::pathplanning::QToQPlanner::Ptr planner;
-	rw::kinematics::MovableFrame* ball_frame;
+	//rw::kinematics::MovableFrame* ball_frame;
 	geometry_msgs::PointStamped location3D;
 	rw::math::Q q_collision;
-	bool collision_status;
+	//bool collision_status;
 
 }; // AnytimePlanning
 
