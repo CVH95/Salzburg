@@ -98,3 +98,7 @@ YES
 ### Collision == FALSE
 
 ![alt text]()
+
+## Changed add\_red\_ball() function.
+
+Added Model3D and Geometry to the RigidObject. This should create the actual object and give collisions.

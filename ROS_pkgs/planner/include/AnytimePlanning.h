@@ -21,6 +21,10 @@
 #include <vector>
 // RobWork headers
 #include <rw/rw.hpp>
+#include <rw/loaders.hpp>
+#include <rw/loaders/Model3DFactory.hpp>
+#include <rw/loaders/GeometryFactory.hpp>
+#include <rw/models/RigidObject.hpp>
 #include <rwlibs/pathplanners/rrt/RRTPlanner.hpp>
 #include <rwlibs/pathplanners/rrt/RRTQToQPlanner.hpp>
 #include <rwlibs/proximitystrategies/ProximityStrategyFactory.hpp>

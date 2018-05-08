@@ -49,7 +49,7 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	
 	state = wc->getDefaultState();	
 
-	AnytimePlanning::add_red_ball(1000);
+	AnytimePlanning::add_red_ball(1);
 	
 	// See if the obstacle was found
 	obstacle = wc->findObject("RedBall");
@@ -62,6 +62,9 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	rw::math::Transform3D<double> bT = b->getTransform(state);
 	cout << "	>> Red Ball created and added succesfully to the WorkCell." << endl;	
 	cout << "	>> Created in: " << bT << endl;
+	cout << "	>> Obstacle data:" << endl << endl;
+	//cout << "		- Model: " << obstacle->getModels() << endl;
+	//cout << "		- Geometry:" << obstacle->getGeometry() << endl;
 
 	state = wc->getDefaultState();
 		
@@ -211,7 +214,16 @@ void AnytimePlanning::add_red_ball(double radius)
 	
 	// Adding frames to workcell: from ROVI1 project
 	const string ball = "RedBall";
+
+	// 10% clearance on the radius size
+	double r = 1.1*radius;
 	
+	ostringstream ss;
+	ss << "#Sphere " << r;
+	string s = ss.str(); 	
+
+	rw::math::Transform3D<> T_0 = rw::math::Transform3D<>::identity();
+
 	ball_frame = new rw::kinematics::MovableFrame(ball);
 	rw::kinematics::Frame* parent = device->getBase();
 	wc->addFrame(ball_frame, parent);
@@ -221,10 +233,22 @@ void AnytimePlanning::add_red_ball(double radius)
         wc->getStateStructure()->setDefaultState(state);
 
 	// Adding ball geometry (10% larger in radius than the actual ball to add some clearence)
-	rw::geometry::Geometry::Ptr ball_geometry = rw::loaders::GeometryFactory::load( "#Sphere 1.1*radius" );
+	rw::geometry::Geometry::Ptr ball_geometry = rw::loaders::GeometryFactory::load(s, true);
 	ball_geometry->setFrame(ball_frame);
-
+	ball_geometry->setTransform(T_0);
+	ball_geometry->setName(ball);
+	
+	// Adding ball's 3D model
+	rw::graphics::Model3D::Ptr model = rw::loaders::Model3DFactory::getModel(s, ball);
+	model->setTransform(T_0);
+	model->setName(ball);
+	
+	// Creating rigid object 
 	rw::models::RigidObject::Ptr obs = new rw::models::RigidObject(ball_frame);
+	obs->addModel(model);
+	obs->addGeometry(ball_geometry);
+
+	// Add obstacle into WorkCell
 	wc->add(obs);
 
 } // add_red_ball()
