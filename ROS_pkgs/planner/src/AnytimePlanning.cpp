@@ -236,58 +236,6 @@ QPath AnytimePlanning::read_path(const string filename)
 }// read_path()
 
 
-/*// Function to create the ball in the WokCell
-void AnytimePlanning::add_red_ball(double radius)
-{
-	
-	// Adding frames to workcell: from ROVI1 project
-	const string ball = "RedBall";
-
-	// 10% clearance on the radius size
-	double r = 1.1*radius;
-	
-	ostringstream ss;
-	ss << "#Sphere " << r;
-	string s = ss.str(); 	
-
-	rw::math::Transform3D<> T_0 = rw::math::Transform3D<>::identity();
-
-	ball_frame = new rw::kinematics::MovableFrame(ball);
-	//rw::kinematics::Frame* parent = device->getBase();
-	rw::kinematics::Frame* parent = wc->findFrame("WORLD");
-	wc->addFrame(ball_frame, parent);
-	
-	// Update state in the workcell to finally add the frame
-	//state = wc->getStateStructure()->upgradeState(state);
-        //wc->getStateStructure()->setDefaultState(state);
-
-	// Adding ball geometry (10% larger in radius than the actual ball to add some clearence)
-	rw::geometry::Geometry::Ptr ball_geometry = rw::loaders::GeometryFactory::load(s, true);
-	ball_geometry->setFrame(ball_frame);
-	ball_geometry->setTransform(T_0);
-	ball_geometry->setName(ball);
-	
-	// Adding ball's 3D model
-	rw::graphics::Model3D::Ptr model = rw::loaders::Model3DFactory::getModel(s, ball);
-	model->setTransform(T_0);
-	model->setName(ball);
-	
-	// Creating rigid object 
-	rw::models::RigidObject::Ptr obs = new rw::models::RigidObject(ball_frame);
-	obs->addModel(model);
-	obs->addGeometry(ball_geometry);
-	obs->addFrame(ball_frame);
-
-	// Add obstacle into WorkCell
-	wc->add(obs);
-
-	// Update state in the workcell to finally add the frame
-	state = wc->getStateStructure()->upgradeState(state);
-        wc->getStateStructure()->setDefaultState(state);
-
-
-} // add_red_ball()*/
-
 
 // To use the ball as an obstacle, we introduce a model in the WorkCell and move it to the coordinates given by the stereo nodes.
 // Important to have a good calibration relative to the Robot's base.
@@ -299,16 +247,18 @@ void AnytimePlanning::move_red_ball(float X, float Y, float Z)
 	double z = (double) Z;
 
 	
-	rw::math::Transform3D<double> ballToBase;
-	ballToBase.P() = rw::math::Vector3D<double>(x, y, z);
+	rw::math::Transform3D<double> ballToWorld;
+	ballToWorld.P() = rw::math::Vector3D<double>(x, y, z);
 	rw::math::RPY<double> rpy = rw::math::RPY<double>(0, 0, 0);
-	ballToBase.R() = rpy.toRotation3D();
+	ballToWorld.R() = rpy.toRotation3D();
+
+	rw::kinematics::Frame *rb = device->getBase();
 
 	//cout << "Transform3D of the ball relative to device->getBase():   " << ballToBase << endl;
 
-	ball_frame->setTransform(ballToBase, state);
+	//ball_frame->setTransform(ballToWorld, state);
 	
-	//ball_frame->moveTo(ballToBase, state); 
+	ball_frame->moveTo(ballToWorld, rb, state); 
 
 
 }// move_red_ball()
@@ -324,11 +274,6 @@ CollisionStrategy::Ptr AnytimePlanning::sphere_strategy(State state)
 
 	// This should call addModel(rw::common::Ptr<rw::models::Object> object) and include the whole obstacle (frame + geometry + Model3D)  
 	strategy->addModel(ball);
-
-	//rw::geometry::Geometry::Ptr ball_geometry = ball->getGeometry();
-	//rw::kinematics::MovableFrame *bf = (MovableFrame *) wc->findFrame("RedBall");
-	//strategy->addModel(bf, ball);
-		
 
 	return strategy;
 

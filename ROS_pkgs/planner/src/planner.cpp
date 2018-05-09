@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
 	// LOADING WORKCELL & INITIAL SETTINGS
 	
-	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml"; 
+	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";
 	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
 	const string pathFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/plan.txt";

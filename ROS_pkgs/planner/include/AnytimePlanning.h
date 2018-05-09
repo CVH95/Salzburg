@@ -76,7 +76,6 @@ class AnytimePlanning{
 	QPath read_path(const string filename);
 
 	// Obstacle related
-	//void add_red_ball(double radius);
 	void move_red_ball(float X, float Y, float Z);
 	CollisionStrategy::Ptr sphere_strategy(State state);
 	bool invalidate_nodes(QPath path, float x, float y, float z);
