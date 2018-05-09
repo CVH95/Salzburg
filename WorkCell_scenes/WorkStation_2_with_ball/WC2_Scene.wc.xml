@@ -12,9 +12,9 @@
  </Frame>
  <Include file="UR/UR.wc.xml" />
  
-<Frame name="Ball" refframe="WORLD">  
-  <RPY> 0 0 0 </RPY> <Pos> 0.36 -0.9 1.5 </Pos>
-  <Drawable name="Ball">
+<Frame name="RedBall" refframe="WORLD" type="Movable">  
+  <RPY> 0 0 0 </RPY> <Pos> 0 0 0 </Pos>
+  <Drawable name="RedBallGeo">
           <Polytope file="Geometry/ball_2" />
      </Drawable>
  </Frame>

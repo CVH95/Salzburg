@@ -2,6 +2,8 @@
 <CollisionSetup>
     <Exclude>
     <FramePair first="Table" second="UR1.Joint1"/>  
-    <FramePair first="Computer" second="Table"/>   	      
+    <FramePair first="Computer" second="Table"/>   
+    <FramePair first="RedBall" second="Table"/>
+    <FramePair first="RedBall" second="Computer"/>	      
     </Exclude>
 </CollisionSetup>

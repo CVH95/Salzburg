@@ -48,8 +48,8 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> Found device: " << dev_name << endl;
 	
 	state = wc->getDefaultState();	
-
-	AnytimePlanning::add_red_ball(1.0);
+	//rw::math::Q q = rw::math::Q(6, -0.087, -1.007, 0.0, -1.573, 0.0, 0.0);
+	//device->setQ(q, state);
 	
 	// See if the obstacle was found
 	Object::Ptr obstacle = wc->findObject("RedBall");
@@ -58,23 +58,51 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 		cerr << "Red Ball not found in the WorkCell!" << endl;
 		dev_found = false;
 	} // if
-	rw::kinematics::MovableFrame *b = (MovableFrame *)wc->findFrame("RedBall");
-	rw::math::Transform3D<double> bT = b->getTransform(state);
-	cout << "	>> Red Ball created and added succesfully to the WorkCell." << endl;	
-	cout << "	>> Created in: " << bT << endl;
-	cout << "	>> Obstacle data:" << endl << endl;
-	//cout << "		- Model: " << obstacle->getModels() << endl;
-	//cout << "		- Geometry:" << obstacle->getGeometry() << endl;
 
-	state = wc->getDefaultState();
+	ball_frame = (MovableFrame *) wc->findFrame("RedBall");
+	if (ball_frame == NULL)
+	{
+		cout << "Could not cast 'ReadBall' into 'MovableFrame *' type" << endl;
+
+	}// if
+
+	cout << "	>> RedBall in:   " << ball_frame->getTransform(state) << endl;
+
+	ball_frame = (MovableFrame *) wc->findFrame("RedBall");
+	rw::math::Transform3D<double> bT = ball_frame->getTransform(state);
+	cout << "	>> Red Ball is in the WorkCell." << endl;	
+	cout << "	>> Created in: " << bT << endl << endl;
+
 		
 	// Set the ball in a starting position (randomly chosen)
-	AnytimePlanning::move_red_ball(-232.8, -391.867, 101.732);
+	//AnytimePlanning::move_red_ball(-232.8, -391.867, 101.732);
+	AnytimePlanning::move_red_ball(0.36, -0.9, 1.5);
 	
 	rw::kinematics::MovableFrame *ballFrame = (MovableFrame *)wc->findFrame("RedBall");
 	rw::math::Transform3D<double> ballT = ballFrame->getTransform(state);	
-	cout << "	>> Transform3D of " << ballFrame << ":" << endl;
+	cout << "	>> Frame " << ballFrame->getName() << " moved to:" << endl;
 	cout << "	>> " << ballT << endl << endl;
+
+	/*//cout <<"	>> CurrentQ = " << device->getQ(state) << endl;
+
+	CollisionStrategy::Ptr S1 = AnytimePlanning::sphere_strategy(state);
+	CollisionDetector detector(wc, S1);
+
+	bool colliding;
+
+	// Check collision		
+	colliding = AnytimePlanning::checkCollisions(state, detector, q);
+	if (colliding == true)
+	{
+		cout << "	>> Collision detected in Q = " << q << endl;
+		
+	}// if
+	else
+	{
+		cout << "	>> No collision" << endl;
+
+	}// else */
+
 
 }// Load_WorkCell()
 
@@ -208,7 +236,7 @@ QPath AnytimePlanning::read_path(const string filename)
 }// read_path()
 
 
-// Function to create the ball in the WokCell
+/*// Function to create the ball in the WokCell
 void AnytimePlanning::add_red_ball(double radius)
 {
 	
@@ -225,7 +253,8 @@ void AnytimePlanning::add_red_ball(double radius)
 	rw::math::Transform3D<> T_0 = rw::math::Transform3D<>::identity();
 
 	ball_frame = new rw::kinematics::MovableFrame(ball);
-	rw::kinematics::Frame* parent = device->getBase();
+	//rw::kinematics::Frame* parent = device->getBase();
+	rw::kinematics::Frame* parent = wc->findFrame("WORLD");
 	wc->addFrame(ball_frame, parent);
 	
 	// Update state in the workcell to finally add the frame
@@ -257,7 +286,7 @@ void AnytimePlanning::add_red_ball(double radius)
         wc->getStateStructure()->setDefaultState(state);
 
 
-} // add_red_ball()
+} // add_red_ball()*/
 
 
 // To use the ball as an obstacle, we introduce a model in the WorkCell and move it to the coordinates given by the stereo nodes.
@@ -272,7 +301,6 @@ void AnytimePlanning::move_red_ball(float X, float Y, float Z)
 	
 	rw::math::Transform3D<double> ballToBase;
 	ballToBase.P() = rw::math::Vector3D<double>(x, y, z);
-	cout << ballToBase.P() << endl;
 	rw::math::RPY<double> rpy = rw::math::RPY<double>(0, 0, 0);
 	ballToBase.R() = rpy.toRotation3D();
 
@@ -290,11 +318,13 @@ void AnytimePlanning::move_red_ball(float X, float Y, float Z)
 CollisionStrategy::Ptr AnytimePlanning::sphere_strategy(State state)
 {
 
-	CollisionStrategy::Ptr strategy;
+	CollisionStrategy::Ptr strategy = ProximityStrategyFactory::makeDefaultCollisionStrategy();
+	//strategy->clear();
 	Object::Ptr ball = wc->findObject("RedBall");
 
 	// This should call addModel(rw::common::Ptr<rw::models::Object> object) and include the whole obstacle (frame + geometry + Model3D)  
 	strategy->addModel(ball);
+
 	//rw::geometry::Geometry::Ptr ball_geometry = ball->getGeometry();
 	//rw::kinematics::MovableFrame *bf = (MovableFrame *) wc->findFrame("RedBall");
 	//strategy->addModel(bf, ball);
@@ -302,7 +332,7 @@ CollisionStrategy::Ptr AnytimePlanning::sphere_strategy(State state)
 
 	return strategy;
 
-}// sphere_strategy
+}// sphere_strategy()
 
 
 
@@ -312,31 +342,31 @@ bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 	//AnytimePlanning::find_obstacles(x, y, z);
 	state = wc->getDefaultState();
 
-	double X = (double) x;
-	double Y = (double) y;
-	double Z = (double) z;
+	// RobWork and Triangulation are set in different units. Conversion from mm to m needed.
+
+	double X = (double) x/1000;
+	double Y = (double) y/1000;
+	double Z = (double) z/1000;
 
 	rw::kinematics::MovableFrame *ball = (MovableFrame *) wc->findFrame("RedBall");
 	if (ball == NULL)
 		{ cout << "RedBall Frame not found." << endl; }
 
 	AnytimePlanning::move_red_ball(X, Y, Z);
-	
-	//state = wc->getDefaultState();
 
 	cout << "	>> RedBall:   " <<  ball_frame->getTransform(state) << endl;
 	
 	Object::Ptr obstacle = wc->findObject("RedBall");
 	
 	if(obstacle == NULL)
-		{cout << "Associated rigid object not found." << endl;}
-	//cout << "	>> Ostacle found on fame:" << obstacle->getFrames() << endl;
-
+		{cout << "	>> Associated rigid object not found." << endl;}
+	cout << "	>> Obstacle found" << endl;
+	
 	// Set collision detection strategy.
-	//CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
-	state = wc->getDefaultState();
 	CollisionStrategy::Ptr S1 = AnytimePlanning::sphere_strategy(state);
+	//cout << "1" << endl;
 	CollisionDetector detector(wc, S1);
+	//cout << "2" << endl;
 
 	bool colliding;
 	for (const rw::math::Q& q : path)
@@ -421,9 +451,18 @@ QPath AnytimePlanning::get_path(double epsilon, rw::math::Q from, rw::math::Q to
 {
 	// Get state
 	State state = wc->getDefaultState();
+	CollisionStrategy::Ptr S0 = AnytimePlanning::sphere_strategy(state);
+
+	/*
+
+		To test how to put in here the STRATEGY of the ball alongside with the workcell
+
+	*/
+
 
 	// Set collision detection strategy.
-	CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
+	// CollisionDetector detector(wc, ProximityStrategyFactory::makeDefaultCollisionStrategy()); 
+	CollisionDetector detector(wc, S0);
 	
 	// Set the planner constraint to build RRT-connect.
 	PlannerConstraint constraint = PlannerConstraint::make(&detector, device, state); 
@@ -488,7 +527,7 @@ QPath AnytimePlanning::get_trajectory(QPath path, rw::math::Q dq_start, rw::math
 
 	cout << "	>> Trajectory duration: " << tn << " seconds." << endl;
 	
-	for (double t = t0; t <= tn; t += 0.025) 
+	for (double t = t0; t <= tn; t += 0.05) 
 	{
 		// Conversion to save to .lua file
 		rw::math::Q q_i(6, traj->x(t)[0], traj->x(t)[1], traj->x(t)[2], traj->x(t)[3], traj->x(t)[4], traj->x(t)[5] );  

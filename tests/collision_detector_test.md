@@ -102,3 +102,30 @@ YES
 ## Changed add\_red\_ball() function.
 
 Added Model3D and Geometry to the RigidObject. This should create the actual object and give collisions.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Checked on test\_collision.cpp
+
+NOW WORKING!!!!! (09-05-2018)
+
+```
+charlie@Asgard:~/catkin_ws$ rosrun planner test_collision 
+
+	>> WorkCell: /home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml
+	>> Found device: UR1
+	>> RedBall in:   Transform3D(Vector3D(0, 0, 0), Rotation3D(1, 0, 0, 0, 1, 0, -0, 0, 1))
+	>> Red Ball is in the WorkCell.
+	>> Created in: Transform3D(Vector3D(0, 0, 0), Rotation3D(1, 0, 0, 0, 1, 0, -0, 0, 1))
+
+	>> Frame RedBall moved to:
+	>> Transform3D(Vector3D(0.36, -0.9, 1.5), Rotation3D(1, 0, 0, 0, 1, 0, -0, 0, 1))
+
+	>> CurrentQ = Q[6]{-0.087, -1.007, 0, -1.573, 0, 0}
+Configuration in collision: Q[6]{-0.087, -1.007, 0, -1.573, 0, 0}
+Colliding frames: 
+RedBall UR1.Joint3
+RedBall UR1.Joint4
+	>> Collision detected in Q = Q[6]{-0.087, -1.007, 0, -1.573, 0, 0}
+charlie@Asgard:~/catkin_ws$ 
+```

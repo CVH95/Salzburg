@@ -76,4 +76,8 @@ target_link_libraries(triangulation_listener ${catkin_LIBRARIES} ${ROS_LIBRARIES
 add_executable(collision_listener src/listener_coll.cpp)
 target_link_libraries(collision_listener ${catkin_LIBRARIES} ${ROS_LIBRARIES})
 
+# Build test_collisions.cpp
+add_executable(test_collision src/test_collision.cpp)
+target_link_libraries(test_collision AnytimePlanning URRobot ${catkin_LIBRARIES} ${ROBWORK_LIBRARIES} ${ROS_LIBRARIES})
+
 MESSAGE(${PROJECT_NAME} " done!")
