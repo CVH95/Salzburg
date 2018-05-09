@@ -63,7 +63,7 @@ class AnytimePlanning{
 	rw::models::WorkCell::Ptr wc;
 	Device::Ptr device;
 	State state;
-	Object::Ptr obstacle;	
+	//Object::Ptr obstacle;	
 	rw::kinematics::MovableFrame* ball_frame;
 	bool collision_status;
 	ros::Publisher booleanPub;
@@ -77,6 +77,7 @@ class AnytimePlanning{
 	// Obstacle related
 	void add_red_ball(double radius);
 	void move_red_ball(float X, float Y, float Z);
+	CollisionStrategy::Ptr sphere_strategy(State state);
 	bool invalidate_nodes(QPath path, float x, float y, float z);
 	void ball_location_callback(const geometry_msgs::PointStamped::ConstPtr &msg);
 	void find_obstacles(ros::NodeHandle nh);
