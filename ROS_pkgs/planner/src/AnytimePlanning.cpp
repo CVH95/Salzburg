@@ -83,36 +83,10 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> Frame " << ballFrame->getName() << " moved to:" << endl;
 	cout << "	>> " << ballT << endl << endl;
 
-	/*//cout <<"	>> CurrentQ = " << device->getQ(state) << endl;
-
-	CollisionStrategy::Ptr S1 = AnytimePlanning::sphere_strategy(state);
-	CollisionDetector detector(wc, S1);
-
-	bool colliding;
-
-	// Check collision		
-	colliding = AnytimePlanning::checkCollisions(state, detector, q);
-	if (colliding == true)
-	{
-		cout << "	>> Collision detected in Q = " << q << endl;
-		
-	}// if
-	else
-	{
-		cout << "	>> No collision" << endl;
-
-	}// else */
-
 
 }// Load_WorkCell()
 
 
-/* 
-	In the main, after calling Load_Workcell(), use the following breaking condition:
-
-	if(wc_found == false || dev_found == false)
-		{return 0;}
-*/
 
 
 // Function that looks for collisions at a given state (Q).
