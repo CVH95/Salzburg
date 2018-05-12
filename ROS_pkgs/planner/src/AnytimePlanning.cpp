@@ -82,6 +82,7 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> " << ballT << endl
 		 << endl;
 
+<<<<<<< HEAD
 	/*//cout <<"	>> CurrentQ = " << device->getQ(state) << endl;
 
 	CollisionStrategy::Ptr S1 = AnytimePlanning::sphere_strategy(state);
@@ -103,13 +104,12 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	}// else */
 
 } // Load_WorkCell()
+=======
 
-/* 
-	In the main, after calling Load_Workcell(), use the following breaking condition:
+}// Load_WorkCell()
 
-	if(wc_found == false || dev_found == false)
-		{return 0;}
-*/
+>>>>>>> ac146a8be5763fa76b765ae9621adcad7aae4b4d
+
 
 // Function that looks for collisions at a given state (Q).
 bool AnytimePlanning::checkCollisions(const State &state, const CollisionDetector &detector, const rw::math::Q &q)
