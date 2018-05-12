@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 
 	AnytimePlanning plan;
 
-	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml";
+	const string wcFile = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml";
 	const string dev = "UR1";
 	
 	plan.Load_WorkCell(wcFile, dev);

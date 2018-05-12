@@ -6,7 +6,7 @@
 URRobot::URRobot(ros::NodeHandle nh)
 {
 	
-	wc_ = rw::loaders::WorkCellLoader::Factory::load("/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml");
+	wc_ = rw::loaders::WorkCellLoader::Factory::load("/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2/WC2_Scene.wc.xml");
 	device_ = wc_->findDevice("UR1");
 	state_ = wc_->getDefaultState();
 	robot = new caros::SerialDeviceSIProxy(nh, "caros_universalrobot");

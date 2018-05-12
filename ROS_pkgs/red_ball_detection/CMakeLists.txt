@@ -36,10 +36,10 @@ catkin_package( CATKIN_DEPENDS message_runtime )
 #includes 
 # Do not forget to declare the /include directory if a shared library is built
 include_directories( ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} include)
-
 # Shared Libraries
 add_library(ObstacleDetection SHARED src/ObstacleDetection.cpp)
 add_library(Stereopsis SHARED  src/Stereopsis.cpp)
+add_library(Kalman SHARED src/kalman_3d.cpp)
 
 # Build Detector (Right image) Node
 add_executable(stereo_detector_destro src/detector_right_image.cpp)
@@ -54,6 +54,13 @@ target_link_libraries( stereo_detector_sinistro ObstacleDetection ${catkin_LIBRA
 add_executable(stereo_triangulation src/triangulation.cpp )
 target_link_libraries( stereo_triangulation ObstacleDetection Stereopsis ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
 #target_link_libraries( stereo_triangulation ObstacleDetection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
+
+# Build Kalman filter 3D Node
+add_executable(kalman_filter src/kalman_ros.cpp)
+target_link_libraries( kalman_filter Kalman  Stereopsis
+${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${ROS_LIBRARIES} ) 
+
+
 
 # Install Launch files
 install(DIRECTORY launch/
