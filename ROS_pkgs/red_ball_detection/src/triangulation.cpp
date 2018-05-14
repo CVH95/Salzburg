@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	const string left_sub_name = "/red_ball_detection/left_image_coordinates";
 	const string right_sub_name = "/red_ball_detection/right_image_coordinates";
 	const string pub_name = "/red_ball_detection/triangulated_ball_location";
-	const string file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/red_ball_detection/calibration/BumbleBee_from_robot.txt";
+	const string file = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/red_ball_detection/calibration/BumbleBee_from_robot.txt";
 
 
 	// Calling Stereopsis Object constructor

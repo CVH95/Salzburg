@@ -63,10 +63,10 @@ int main(int argc, char** argv)
 	rw::math::Math::seed();
 
 	// Files
-	const string wcFile = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml"; 
+	const string wcFile = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/WorkCell_scenes/WorkStation_2_with_ball/WC2_Scene.wc.xml"; 
 	const string deviceName = "UR1";
-	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
-	const string filename = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/tests/plan.txt";
+	const string bw_file = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
+	const string filename = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/tests/plan.txt";
 
 	// Topics
 	const string scene = "/red_ball_detection/triangulated_ball_location";
@@ -89,13 +89,14 @@ int main(int argc, char** argv)
 
 	// Goal configuration defined
 	rw::math::Q to_deg(6,151.34, -96.45, -107.53, -120.87, 272.71, 2.02); // deg
+	//rw::math::Q to(6, 2.64138, -1.68337, -1.87675, -2.10958, 4.75969, 0.0352557);
 	rw::math::Q to = to_deg*(3.14159265359/180); // rad
 
 	// Initial and final velocities for interpolating trajectory
 	rw::math::Q dq_start(6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	rw::math::Q dq_end(6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	double epsilon = 0.5; //RRT's extend parameter
+	double epsilon = 0.05; //RRT's extend parameter
 
 	// Set node to be client of "/caros_universalrobot/caros_serial_device_service_interface/move_servo_q".
 	// In order to broadcast Q's belonging to the path, it is required that the client node sends Q request msgs to the server in charge of moving the robot. 

@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "planner");
         ros::NodeHandle nh;
 	
-	const string bw_file = "/home/charlie/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
+	const string bw_file = "/home/richard/catkin_ws/src/ROVI2_Object_Avoidance/ROS_pkgs/planner/genfiles/backwards_trajectory.txt";
 
 	cout << "Going Backwards" << endl;
 

@@ -65,7 +65,8 @@ int main(int argc, char** argv)
 	std::cout << "Input destination joint config in radians:" << std::endl;
 	/*float q1, q2, q3, q4, q5, q6;
 	std::cin >> q1 >> q2 >> q3 >> q4 >> q5 >> q6;*/
-	rw::math::Q q_start(6, -1.04475, -1.78024, -2.24013, -0.781733, 1.61513, 0.0356047);
+	rw::math::Q from_deg(6, -59.86, -102.00, -128.35, -44.79, 92.54, 2.04); // deg
+	rw::math::Q q_start = from_deg*(3.14159265359/180); // rad
 
 	if (robot.setQ(q_start))
 		std::cout << std::endl << "New joint config:" << std::endl << robot.getQ() << std::endl;
