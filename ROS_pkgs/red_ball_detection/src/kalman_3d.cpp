@@ -28,11 +28,11 @@
 #define DT 0.15		// timestep
 #define U_0 0
 
-#define X_NOISE 50
+#define X_NOISE 1
 #define Y_NOISE 0
 #define Z_NOISE 2
-#define PROCESS_NOISE 0.1 //(Q_)
-#define MEASUREMENT_NOISE 10 //(R_)
+#define PROCESS_NOISE 0.01 //(Q_)
+#define MEASUREMENT_NOISE 1 //(R_)
 #define ERROR_COV_POST_NOISE 0.1 //(P_)
 #define G 9.81
 using namespace std;
@@ -184,7 +184,7 @@ cv::Point3_<float> KALMAN::predict(cv::KalmanFilter &KF)
 	// Do a prediction and return as cv::Point
 	
 	cv::Mat prediction = KF.predict();
-	cout << "KalmanFilter::Predict" << endl;
+	//cout << "KalmanFilter::Predict" << endl;
 	cv::Point3_<float> predicted_pt(prediction.at<float>(0),prediction.at<float>(1), prediction.at<float>(2));
 	//cv::Point predicted_pt(0,0);
 	return predicted_pt;
@@ -194,7 +194,7 @@ cv::Point3_<float> KALMAN::predict(cv::KalmanFilter &KF)
 cv::Point3_<float> KALMAN::correct(cv::KalmanFilter &KF, cv::Mat measurement)
 {
 	// Do a correction and return as cv::Point
-	cout << "KalmanFilter::Correct" << endl;
+	//cout << "KalmanFilter::Correct" << endl;
 	cv::Mat update = KF.correct(measurement);
 	cv::Point3_<float> corrected_pt(update.at<float>(0),update.at<float>(1), update.at<float>(2));
 	return corrected_pt;
@@ -240,20 +240,20 @@ cv::Point3_<float> KALMAN::Kalman_filter_3D(cv::Mat measPt){
 	cv::Point3_<float> kf3_predicted = KALMAN::predict(KF3);
 	cv::Point3_<float> kf3 = kf3_predicted;
 	//KF3D_Points.push_back(kf3_predicted);
-	cout << "Ball Center prediction : " << kf3_predicted << endl;
-	cout << "Ball Center Measurement : " << measPt << endl;
+	//cout << "Ball Center prediction : " << kf3_predicted << endl;
+	//cout << "Ball Center Measurement : " << measPt << endl;
 	float test = measPt.at<float>(0,0);
 	//measurementPoints.push_back(measPt)
 	if (isnan(test))
 	{
-		cout << "Correction skipped" << endl << endl << endl;
+		//cout << "Correction skipped" << endl << endl << endl;
 		skipCorrect(KF3);
 	}
 	else 
 	{
 		cv::Point3_<float> kf3_corrected = KALMAN::correct(KF3, measPt);
 		kf3 = kf3_corrected;
-	cout << "Ball Center Correction : " << kf3_corrected << endl;
+	//cout << "Ball Center Correction : " << kf3_corrected << endl;
 
 	}
 	
@@ -300,7 +300,7 @@ void KALMAN::ball_location_kf_callback(const geometry_msgs::PointStamped::ConstP
 
 	
 	//cout << "Kalman filter checked in:  " << time_past << " seconds." << endl;
-
+	KF_location_3D.header.stamp = msg->header.stamp;
 	KF_location_3D.point.x = kf_3d.x;
 	KF_location_3D.point.y = kf_3d.y;
 	KF_location_3D.point.z = kf_3d.z;

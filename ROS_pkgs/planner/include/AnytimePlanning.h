@@ -29,6 +29,7 @@
 #include <rwlibs/pathplanners/rrt/RRTQToQPlanner.hpp>
 #include <rwlibs/proximitystrategies/ProximityStrategyFactory.hpp>
 #include <rw/trajectory/CubicSplineFactory.hpp>
+#include <rwlibs/pathoptimization/pathlength/PathLengthOptimizer.hpp>
 // Caros & ROS headers
 #include "ros/ros.h"
 #include <caros/common.h>
@@ -93,6 +94,7 @@ class AnytimePlanning{
 	void collision_callback(const std_msgs::Bool::ConstPtr &status);
 	void dynamic_trajectory(ros::NodeHandle nh, QPath path, double e, ros::ServiceClient client, caros_control_msgs::SerialDeviceMoveServoQ srv, const string bool_t_n, Q goal, 
 					Q dq0, Q dq1, const string filename);
+	double qError(rw::math::Q pt1, rw::math::Q pt2);
 
   private: 
 	/*const string wc_name;

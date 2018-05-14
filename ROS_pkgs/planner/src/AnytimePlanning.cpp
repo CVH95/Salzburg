@@ -17,6 +17,7 @@ using namespace rw::models;
 using namespace rw::pathplanning;
 using namespace rw::proximity;
 using namespace rw::trajectory;
+using namespace rwlibs::pathoptimization;
 using namespace rwlibs::pathplanners;
 using namespace rwlibs::proximitystrategies;
 
@@ -82,7 +83,6 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	cout << "	>> " << ballT << endl
 		 << endl;
 
-<<<<<<< HEAD
 	/*//cout <<"	>> CurrentQ = " << device->getQ(state) << endl;
 
 	CollisionStrategy::Ptr S1 = AnytimePlanning::sphere_strategy(state);
@@ -104,11 +104,6 @@ void AnytimePlanning::Load_WorkCell(const string wc_name, const string dev_name)
 	}// else */
 
 } // Load_WorkCell()
-=======
-
-}// Load_WorkCell()
-
->>>>>>> ac146a8be5763fa76b765ae9621adcad7aae4b4d
 
 
 // Function that looks for collisions at a given state (Q).
@@ -266,7 +261,7 @@ CollisionStrategy::Ptr AnytimePlanning::sphere_strategy(State state)
 
 } // sphere_strategy()
 
-// Function to check collisions
+// Function to check collisions, if there is a collision in the path, it returns true
 bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 {
 	//AnytimePlanning::find_obstacles(x, y, z);
@@ -303,22 +298,36 @@ bool AnytimePlanning::invalidate_nodes(QPath path, float x, float y, float z)
 	//cout << "2" << endl;
 
 	bool colliding;
+	//initialize the "previous" node for the loop
+	rw::math::Q prev(6,0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	for (const rw::math::Q &q : path)
 	{
-		// Check collision
-		colliding = AnytimePlanning::checkCollisions(state, detector, q);
-		if (colliding == true)
+		//we don't do anything if we're at the first node
+		//because we're gonna care about it in the second iteration
+		if(prev(0) != 0.0 && prev(1) != 0.0) 
 		{
-
-			q_collision = q;
-			cout << "Collision detected in Q = " << q_collision << endl;
-			return true;
-		} // if
-
+			 //delta a small vector which points from the previous node to the next one
+			rw::math::Q delta = (q-prev) / 20;
+			//we will start from the previous node and iterate towards the next node
+			//in the configuration space using the delta vector
+			rw::math::Q betweenNodes = prev;
+			for (int i = 0; i< 20; i++)
+			{
+				//making a small iteration towards q from prev
+				betweenNodes += delta;
+				colliding = AnytimePlanning::checkCollisions(state, detector, betweenNodes);
+				if (colliding == true)
+				{
+					q_collision = betweenNodes;
+					cout << "Collision detected in Q = " << q_collision << endl;
+					return true;
+				} // if
+			}//for
+		}//if
+		//Update "previous" node at the end of the function
+		prev = q;
 	} // for
-
 	return false;
-
 } // invalidate_nodes()
 
 //Callback function
@@ -370,7 +379,7 @@ void AnytimePlanning::ball_location_callback(const geometry_msgs::PointStamped::
 void AnytimePlanning::find_obstacles(ros::NodeHandle nh)
 {
 
-	ros::Subscriber subs = nh.subscribe("/red_ball_detection/triangulated_ball_location", 1, &AnytimePlanning::ball_location_callback, this);
+	ros::Subscriber subs = nh.subscribe("/red_ball_detection/kalman_ball_location", 1, &AnytimePlanning::ball_location_callback, this);
 
 	ros::spin();
 
@@ -424,9 +433,16 @@ QPath AnytimePlanning::get_path(double epsilon, rw::math::Q from, rw::math::Q to
 	planner->query(from, to, path, MAXTIME);
 	t.pause();
 	cout << endl;
+	cout << "	>> Path plan finished with epsilon = "  << epsilon << endl;
 	cout << "	>> Path's length: " << path.size() << endl;
 	cout << "	>> Computation time: " << t.getTime() << " seconds." << endl;
 	cout << endl;
+
+	//Path optimization to get rid of unnecassary moves
+	PathLengthOptimizer opt(constraint, metric);
+	path = opt.pathPruning(path);
+		cout << "	>> Pathpruning done"  << endl;
+	cout << "	>> Path's length: " << path.size() << endl;
 
 	return path;
 
@@ -553,11 +569,11 @@ void AnytimePlanning::dynamic_trajectory(ros::NodeHandle nh, QPath path, double 
 
 	for (const rw::math::Q &p : path)
 	{
+		//use ros spinOnce to update collision status
+		ros::spinOnce(); 
 		if (collision_status == false)
 		{
-			cout << "Collision status = FALSE" << endl
-				<< endl
-				<< endl;
+			cout << "Collision status = FALSE" << endl << endl	<< endl;
 
 			// This should be able to move the robot
 			caros_common_msgs::Q q;
@@ -575,27 +591,57 @@ void AnytimePlanning::dynamic_trajectory(ros::NodeHandle nh, QPath path, double 
 			{
 				ROS_ERROR("ERROR IN CAROS_MOVE_SERVO_Q REQUEST. FAILED TO MOVE ROBOT");
 			} // else
-			ros::Duration(1).sleep();
 
+			//while we don't reach the next configuration in the path, we check the collision
+			//status continiously, we use a distance function
+			while(qError(UR5.getQ(),p) > 0.1) 
+			{
+				//cout << qError(UR5.getQ(),p) << endl;
+				//update collision status while moving from one node in the path towards the next one
+				ros::spinOnce();
+				if (collision_status == true)
+				{
+					cout << "Collision detected, starting to replan" << endl;
+					rw::math::Q q_now = UR5.getQ();
+					QPath new_path = AnytimePlanning::replan(q_now, goal, dq0, dq1, filename, e);
+					AnytimePlanning::dynamic_trajectory(nh, new_path, e, client, srv, bool_t_n, goal, dq0, dq1, filename);
+					return;
+				} // if inCollision
+				else
+					cout << "Collision status = FALSE" << endl;
+			}
 			currentQ = p;
 		} // collision false
 
+		//I was thinking that maybe we can get rid of this because it's enough to have it a few lines
+		//above (while moving from one node to the other), but if we have a collision at the time when
+		//we switch node, we would not replan and we would not enter the prevous condition neither
 		if (collision_status == true)
 		{
-			cout << "Collision status = TRUE" << endl;
 			cout << "Collision detected, starting to replan" << endl;
 			rw::math::Q q_now = UR5.getQ();
 			QPath new_path = AnytimePlanning::replan(q_now, goal, dq0, dq1, filename, e);
 			AnytimePlanning::dynamic_trajectory(nh, new_path, e, client, srv, bool_t_n, goal, dq0, dq1, filename);
+			 //if the recursive call of the function finishes and returns, let's return from this too
+			 //because we will already be at the end of the path
 			return;
-		} // if inCollision
-		ros::spinOnce(); //if you don't have ros::spinOnce, the collision status never updates
-	}
+			} // if inCollision
+	}//for path
 
 	cout << "Trajectory finished" << endl;
 } //dynamic_trajectory()
 
-
+//To calculate an euclidian distance between 2 configurations
+double AnytimePlanning::qError(rw::math::Q pt1, rw::math::Q pt2)
+{
+	double sum = 0;
+	for(int i=0; i<6; i++)
+	{
+			sum+=pow(pt1(i) - pt2(i),2);
+	}
+	sum = sqrt(sum);
+	return sum;
+}
 
 /*
 // Online path planning: Send trajectory + collision checking + replanning
