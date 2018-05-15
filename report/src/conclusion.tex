@@ -1,0 +1,30 @@
+\newpage
+\section{Discussion}
+\label{sec:dis}
+%2D vs 3D Kalman filter
+We had some discussions about in which dimensionality the Kalman filter should be implemented. In theory, the filter should be able to work well in both cases. However, implementing a 2D Kalman filter would imply initialize two filters where the process and measurement noises would be different. Moreover a synchronization of them along with the object recognition could be required. In order to implement into the system is a bit complex rather than in the space. The main drawback of this choice is that we were not able to show the Kalman filter response in the 2D image. It would require extra time that we prefer to spend in another issues.
+
+
+
+\section{Conclusion}
+\label{sec:con}
+We could conclude that the project was successful in a sense that all the components were successfully implemented. In addition to this, we succeeded integrating a complex system using multiple frameworks. The robot managed to perform the object avoidance with a short computation time and a short reaction time to a collision in the path. There are options to improve the individual components of the system, but there is nothing much left to do with the integration of them. We discuss the possibilities for improvements in the next section.
+
+%Each component of the system works, the components are well integrated and the system manages to what it has to. WE MADE IT WORK and we did not just implement separate components but they are actually put together!!
+%We have some improvements to do (future work), we need to evaluate, we can make separate components work faster / more accurate, but no big changes have to be made
+
+\section{Future Work}
+At this moment, we have several useful features of the Kalman filter, but we also wanted to give the predictions about the expected position of the ball based on the measurements at a given moment to the planner. This functionality would be very useful for object avoidance with a moving object where the planner finds a path without colliding the ball in anytime. 
+
+We could use both the measurement and the prediction as an input to the workcell to define the collision volume in a more sophisticated way. A simple way would be placing the object in both positions. Another way could be connecting the points by sweeping the object in the 3D space from one to the other.
+
+Our observation is that when we try to place the ball in the path of the robot, we often have to move the ball close to the robot. When the robot detects collision in the configuration in which it is at a given moment, it stops and tries to replan, but never succeeds, because the actual configuration is always part of the path. A small modification in the implementation has to be made so that the robot leaves the collision configuration and continues a collision-free path.
+
+Additionally an extension of the Kalman Filter could be implemented for non-linear motions. At this moment, the filter is able to track the ball and predict linear movements. In case that the filter is only predicting and non-linearities come up to the system, it would end up in a bad tracking. Adding an Extended Kalman Filter or Unscented Kalman Filter could help to predict the non-linear trajectories of the ball making a better accurate tracking.
+
+Finally, a more accurate transformation would help a lot to evaluate the system as a whole. We noticed that there is an error in the result of the triangulation which scales with the distance from the camera. Sometimes the robot hit the ball and we were not able to determine if it's the result of a bigger error in the triangulated 3D coordinate.
+
+%Kalman filter prediction
+%Defining a collision volume which connects the actual coordinate and the predicted coordinate
+%Moving the robot even if it is in collision in the very first node
+%Better calibration

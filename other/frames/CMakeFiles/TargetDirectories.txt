@@ -1,3 +1,0 @@
-/home/student/vision/project/frames/CMakeFiles/edit_cache.dir
-/home/student/vision/project/frames/CMakeFiles/rebuild_cache.dir
-/home/student/vision/project/frames/CMakeFiles/Frame_Operations.dir

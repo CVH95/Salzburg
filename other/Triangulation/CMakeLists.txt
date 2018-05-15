@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-set (CMAKE_CXX_STANDARD 11)
-project( Stereopsis )
-find_package( OpenCV REQUIRED )
-add_executable( Stereopsis src/stereopsis.cpp src/methods.hpp)
-target_link_libraries( Stereopsis ${OpenCV_LIBS} )

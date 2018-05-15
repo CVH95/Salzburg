@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(Stereo_Operations)
-find_package(OpenCV 3 REQUIRED)
-add_executable(Stereo_Operations stereo_ops.cpp)
-target_link_libraries(Stereo_Operations ${OpenCV_LIBS})

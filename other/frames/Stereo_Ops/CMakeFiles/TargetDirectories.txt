@@ -1,3 +1,0 @@
-/home/student/vision/project/frames/Stereo_Ops/CMakeFiles/edit_cache.dir
-/home/student/vision/project/frames/Stereo_Ops/CMakeFiles/rebuild_cache.dir
-/home/student/vision/project/frames/Stereo_Ops/CMakeFiles/Stereo_Operations.dir
