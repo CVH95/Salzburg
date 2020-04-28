@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rovi2_demo_manager</name>
+  <version>0.0.0</version>
+  <description>The rovi2_demo_manager package</description>
+
+  <maintainer email="cavie17@studen.sdu.dk">Carlos</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+  <depend>ur_description</depend>
+  <depend>hector_sensors_description</depend>
+
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>stereo_vision_avd</exec_depend>
+
+  <test_depend>roslaunch</test_depend>
+
+  <export>
+  </export>
+
+</package>

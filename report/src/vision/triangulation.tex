@@ -1,7 +1,0 @@
-\subsection{Triangulation}
-\label{sec:tri}
-
-So far, we can find the location of the obstacle in the 2D images, now that we need to know the location of the obstacle in a three-dimensional Cartesian coordinate system, which is possible using stereopsis and point reconstruction. To be able to triangulate the center of the ball in 3D, we need to build the projection matrix based in the intrinsic and extrinsic parameters of both the left and right camera. This parameters were obtained in the calibration process. \\
-
-The intrinsic matrix of the camera is a 3x3 matrix, consisting the focal lengths (fx, fy) and the principal points (Cx, Cy), which helps in projecting the 3D points in the camera coordinate frame to 2D pixel coordinates. This intrinsic camera matrix is for the raw distorted images. The distortion model of the camera and its parameters are identified in the calibration process, which can be used to get an undistorted image. The projection matrix is a 3x4 matrix with its left 3x3 portion corresponding to the intrinsic camera matrix for a rectified image. And the fourth column consists of the position of the optical centre with respect to the left camera's frame \cite{cam}.\\
-

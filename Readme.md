@@ -1,6 +1,6 @@
 # ROVI 2 Final Project: OBJECT AVOIDANCE
 
-This project was developed during the course of Robotics and Computer Vision 2 (spring 2018), at University of Southern Denmark, by Carlos, Richárd, Sergi and Mathesh. The setup is a WorkCell composed by a UR5 robot arm mounted on a table with a BumbleBee 2 stereo camera mounted on a corner. The project consisted on an application for dynamic path planning capable of real time replanning when an obstacle is placed interrupting its route, from an initial configuration q\_start to a final one q\_end (like in a pick & place). As obstacle object we used an small red ball. 
+This project was developed during the course of Robotics and Computer Vision 2 (spring 2018), at University of Southern Denmark, by Carlos, Richárd, Sergi and Mathesh. The setup is a WorkCell composed by a UR5 robot arm mounted on a table with a BumbleBee 2 stereo camera mounted on a corner. The project consisted on an application for dynamic path planning capable of real time replanning when an obstacle is placed interrupting its route, from an initial configuration q\_start to a final one q\_end (like in a pick & place). As obstacle object we used an small red ball.
 
 ## A. Download and build repository
 
@@ -47,7 +47,7 @@ $ ping 192.168.100.52
 $ ping 192.168.100.2
 ```
 
-4.  Edit .xml parameter file with the IPs of the robot and the laptop 
+4.  Edit .xml parameter file with the IPs of the robot and the laptop
 
 ```sh
 $ source /opt/ros/kinetic/setup.bash
@@ -87,7 +87,7 @@ $ export ROS_IP=192.168.100.52
 
 #### On the laptop:
 
-Export URI and IP (THIS HAS TO BE DONE FOR ANY NEW TERMINAL USED TO RUN ROS COMMANDS) 
+Export URI and IP (THIS HAS TO BE DONE FOR ANY NEW TERMINAL USED TO RUN ROS COMMANDS)
 
 ```sh
 $ export ROS_MASTER_URI=http://192.168.100.52:11311/
@@ -117,7 +117,7 @@ $ roslaunch pointgrey_camera_driver bumblebee.launch
 
 #### Visualizing (Robot's computer or any other one in the network):
 
-Run first /rostopic list/ to check if topics launched on Lab computer can be seen in the laptop (URI configuration). 
+Run first /rostopic list/ to check if topics launched on Lab computer can be seen in the laptop (URI configuration).
 
 ```
 $ rostopic list
@@ -158,7 +158,7 @@ $ rosrun robot_state_monitoring robot_state_monitoring
 The planner node is the main one in charge of path planning and robot motion. Some features to mention about its implementation:
 
  - It is set up as a client of the `/move_servo_q` CAROS service. In order to move the robot, it requests the CAROS interface to do it by sending each configuraton vector Q in the trajectory calculated.
- - It is subscribed to `/robot_state` in order to be able to obtain instant information abour the current configuration state of the UR (needed for replanning). 
+ - It is subscribed to `/robot_state` in order to be able to obtain instant information abour the current configuration state of the UR (needed for replanning).
 
 ```sh
 $ rosrun planner planner
@@ -198,4 +198,4 @@ Two launch files are added to be able to run the detection nodes all at once and
 
 ```sh
 $ roslaunch red_ball_detection static_detection.launch (no Kalman)
-``` 
+```

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>stereo_vision_avd</name>
+  <version>0.0.0</version>
+  <description>The stereo_vision_avd package</description>
+
+  <maintainer email="cavie17@student.sdu.com">Carlos</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rosconsole</depend>
+  <depend>roscpp</depend>
+  <depend>roslib</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rovi2_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>tf2_ros</depend>
+  <depend>eigen_conversions</depend>
+  <depend>eigen</depend>
+  <depend>message_filters</depend>
+
+  <!-- Test  -->
+  <!-- <test_depend>roslaunch</test_depend> -->
+
+  <export>
+  </export>
+
+</package>

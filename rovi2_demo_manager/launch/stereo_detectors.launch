@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="left_detector_config" default="$(find rovi2_demo_manager)/config/left_detector_params.yaml"/>
+    <arg name="right_detector_config" default="$(find rovi2_demo_manager)/config/right_detector_params.yaml"/>
+
+    <!-- I need to define in red_ball_detection_node readParams() to read data privately ~ -->
+
+    <rosparam command="load" file="$(arg left_detector_config)"/>
+    <rosparam command="load" file="$(arg right_detector_config)"/>
+
+    <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+    <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+</launch>

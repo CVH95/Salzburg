@@ -1,0 +1,4 @@
+image_topic: stereo/right/image_raw
+points_topic: right/points
+output_topic: right/result
+publish_images: true

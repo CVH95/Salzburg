@@ -1,7 +1,0 @@
-
-<CollisionSetup>
-    <Exclude>
-    <FramePair first="Table" second="UR1.Joint1"/>  
-    <FramePair first="Computer" second="Table"/>   	      
-    </Exclude>
-</CollisionSetup>
