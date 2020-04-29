@@ -1,4 +1,4 @@
-image_topic: stereo/left/image_raw
-points_topic: left/points
-output_topic: left/result
+image_topic: /bumblebee2/left/image_raw
+points_topic: points
+output_topic: result
 publish_images: true

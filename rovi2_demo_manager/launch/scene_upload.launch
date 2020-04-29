@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="kinematics_config" default="$(find workcell_scene_description)/config/ur5.yaml"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find workcell_scene_description)/urdf/workcell.urdf.xacro'
+      kinematics_config:=$(arg kinematics_config)"/>
+</launch>

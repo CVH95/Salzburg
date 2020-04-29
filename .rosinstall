@@ -6,3 +6,7 @@
     local-name: 'Universal_Robots_ROS_Driver'
     uri: 'https://github.com/UniversalRobots/Universal_Robots_ROS_Driver'
     version: 'master'
+- git:
+    local-name: 'pointgrey_camera_driver'
+    uri: 'https://github.com/ros-drivers/pointgrey_camera_driver.git'
+    version: 'master'

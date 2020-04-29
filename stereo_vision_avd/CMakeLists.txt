@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   eigen_conversions
   message_filters
+  kalman_tracking_3d
 )
 
 find_package(OpenCV 3 REQUIRED)
@@ -57,14 +58,3 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.h"
   PATTERN ".svn" EXCLUDE
 )
-
-# install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-# install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
-# Launch test
-# if(CATKIN_ENABLE_TESTING)
-#   find_package(catkin REQUIRED COMPONENTS
-#     roslaunch
-#   )
-#   roslaunch_add_file_check(launch)
-# endif()

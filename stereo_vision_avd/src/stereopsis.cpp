@@ -1,6 +1,8 @@
 /**
  * @file   stereopsis.cpp
  *
+ * Richárd, Sergi, Mathesh and Carlos.
+ *
  * @brief ROS wrapper for detection of (spheric) red obstacles.
  * @brief Publishes image points corresponding to object centers.
  */
@@ -22,6 +24,9 @@ Stereopsis::Stereopsis(ros::NodeHandle node_handle) : nh_(node_handle)
   ROS_INFO(" * Stereo baseline: %f", baseline_);
 
   ros::Duration(0.5).sleep();
+
+  kalman_ = new kalman_tracking_3d::KalmanTacking3d("velocity");
+  kf_ = kalman_->velocityKF();
 
   setProjectionMatrices();
 }
@@ -221,21 +226,52 @@ void Stereopsis::synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr
   rovi2_msgs::points2d right_detection = *right_msg;
 
   ROS_INFO("---------------");
-  if (!left_detection.points.empty() || !right_detection.points.empty())
-  {
-    std::vector<std::tuple<rovi2_msgs::point2d, rovi2_msgs::point2d> > center_pairs =
-        stereoMatching(left_detection, right_detection);
-    rovi2_msgs::points3d obstacles = triangulateObjectsCv(center_pairs);
-    ws_monitoring_pub_.publish(obstacles);
 
-    for (int i = 0; i < obstacles.points.size(); i++)
-    {
-      rovi2_msgs::point3d p = obstacles.points[i];
-      broadcastDetectedTf(p, std::to_string(i));
-      ROS_INFO("Detected obstacle at (%f, %f, %f)", p.x, p.y, p.z);
-    }
+  if (left_detection.points.empty() || right_detection.points.empty())
+  {
+    ROS_WARN("No detections received");
+    return;
   }
+
+  std::vector<std::tuple<rovi2_msgs::point2d, rovi2_msgs::point2d> > center_pairs =
+      stereoMatching(left_detection, right_detection);
+  rovi2_msgs::points3d obstacles = triangulateObjectsCv(center_pairs);
+
+  // Tracking with Kalman filter
+  rovi2_msgs::points3d obstacle_track;
+  for (int i = 0; i < obstacles.points.size(); i++)
+  {
+    rovi2_msgs::point3d p = obstacles.points[i];
+    ROS_INFO("Detected obstacle at (%f, %f, %f)", p.x, p.y, p.z);
+
+    // Kalman filter
+    cv::Mat_<float> measurement(3, 1);
+    measurement(0) = p.x;
+    measurement(1) = p.y;
+    measurement(2) = p.z;
+
+    Eigen::Vector3f track = kalman_->kalmanFilter3d(measurement, kf_);
+    rovi2_msgs::point3d k;
+    k.x = track.x();
+    k.y = track.y();
+    k.z = track.z();
+    k.object_id = p.object_id;
+
+    broadcastDetectedTf(k, std::to_string(i));
+    obstacle_track.points.push_back(k);
+    ROS_INFO("Tracked obstacle at (%f, %f, %f)", k.x, k.y, k.z);
+  }
+
+  obstacle_track.header.stamp = ros::Time::now();
+  obstacle_track.header.frame_id = left_camera_frame_;
+  ws_monitoring_pub_.publish(obstacle_track);
+
   ROS_INFO("---------------");
+}
+
+void Stereopsis::freeMemory()
+{
+  delete kalman_;
 }
 
 }  // namespace stereo_vision_avd

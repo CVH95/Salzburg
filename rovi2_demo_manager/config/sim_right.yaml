@@ -1,0 +1,27 @@
+%YAML:1.0
+---
+image_width: 1024
+image_height: 768
+camera_name: bumblebee2
+camera_frame: bumblebee2_link_optical
+camera_matrix:  !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1299.7869189926048, 0.0, 512.5, 0.0, 1299.7869189926048, 384.5, 0.0, 0.0, 1.0]
+distortion_model: plumb_bob
+distortion_coefficients:  !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.0, 0.0, 0.0, 0.0, 0.0]
+rectification_matrix:  !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+projection_matrix:  !!opencv-matrix
+  rows: 3
+  cols: 4
+  dt: d
+  data: [1299.7869189926048, 0.0, 512.5, -155.97443027911257, 0.0, 1299.7869189926048, 384.5, 0.0, 0.0, 0.0, 1.0, 0.0]

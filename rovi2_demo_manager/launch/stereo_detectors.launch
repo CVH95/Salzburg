@@ -5,9 +5,13 @@
 
     <!-- I need to define in red_ball_detection_node readParams() to read data privately ~ -->
 
-    <rosparam command="load" file="$(arg left_detector_config)"/>
-    <rosparam command="load" file="$(arg right_detector_config)"/>
+    <group ns="left">
+        <rosparam  command="load" file="$(arg left_detector_config)"/>
+        <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+    </group>
 
-    <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
-    <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+    <group ns="right">
+        <rosparam command="load" file="$(arg right_detector_config)"/>
+        <node name="detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+    </group>
 </launch>

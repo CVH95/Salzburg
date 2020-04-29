@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="paused" default="false" doc="Starts gazebo in paused mode" />
+  <arg name="gui" default="true" doc="Starts gazebo gui" />
+  <arg name="use_sim_time" default="true"/>
+
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="$(find workcell_scene_description)/worlds/demo.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+  </include>
+
+  <!-- send robot urdf to param server -->
+  <include file="$(find rovi2_demo_manager)/launch/scene_upload.launch"></include>
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
+
+  <include file="$(find ur_gazebo)/launch/controller_utils.launch"/>
+
+  <!-- start this controller -->
+  <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur5.yaml" command="load"/>
+  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+
+  <!-- load other controllers -->
+  <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load joint_group_position_controller" />
+
+  <!-- Launch random motion generation for the ball -->
+  <node name="red_ball" pkg="anytime_planning_avd" type="random_ball_motion_node" output="screen"></node>
+    <param name="gazebo_topic" type="str" value="gazebo/set_link_state"/>
+    <param name="link" type="str" value="robot::red_ball"/>
+    <param name="reference" type="str" value="ground_plane::link"/>
+
+</launch>

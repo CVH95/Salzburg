@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+       name="workcell" >
+
+	<!-- common stuff -->
+	<xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+	<!-- ur5e -->
+	<xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" />
+
+	<!-- arm -->
+	<xacro:arg name="kinematics_config" default="$(find ur_description)/config/ur5_default.yaml"/>
+	<xacro:ur5_robot prefix="" joint_limited="false" kinematics_file="${load_yaml('$(arg kinematics_config)')}"/>
+
+	<link name="world" />
+	<joint name="world_joint" type="fixed">
+		<parent link="world" />
+		<child link = "base_link" />
+		<origin xyz="0.0 0.0 1.085" rpy="0.0 0.0 0.0" />
+	</joint>
+
+	<!-- Table -->
+	<link name="table">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0.25 0.5425" />
+			<mass value="1.0" />
+			<inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="100.0"  iyz="0.0"  izz="1.0" />
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0.25 0.5425"/>
+			<geometry>
+				<box size="0.87 1.13 1.085"/>
+			</geometry>
+			<material name="grey"/>
+		</visual>
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0.25 0.5425"/>
+			<geometry>
+				<box size="0.87 1.13 1.085"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="table_joint" type="fixed">
+		<parent link="world"/>
+		<child link="table"/>
+    </joint>
+	<gazebo reference="table">
+		<material>Gazebo/Grey</material>
+	</gazebo>
+
+	<!-- Camera -->
+	<xacro:include filename="$(find pointgrey_camera_description)/urdf/pointgrey_bumblebee2.urdf.xacro" />
+    <BB2-08S2C-60 frame="bumblebee2_link" name="bumblebee2" />
+
+    <joint name="world_camera_joint" type="fixed">
+        <origin xyz="0.87 1.13 2.75" rpy="0.0 1.0 -2.35" />
+        <parent link="world" />
+        <child link="bumblebee2_link" />
+    </joint>
+
+	<!-- Red Ball -->
+	<xacro:include filename="$(find workcell_scene_description)/urdf/red_ball.urdf"/>
+	<joint name="world_ball_joint" type="floating">
+        <origin xyz="0.0 0.65 1.185" rpy="0.0 0.0 0.0" />
+        <parent link="world" />
+        <child link="red_ball" />
+    </joint>
+</robot>

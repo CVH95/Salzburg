@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>workcell_scene_description</name>
+  <version>0.0.0</version>
+  <description>The workcell_scene_description package</description>
+
+  <maintainer email="cavie17@student.sdu.dk">Carlos</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>pointgrey_camera_description</depend>
+  <depend>ur_description</depend>
+
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <export>
+  </export>
+
+</package>

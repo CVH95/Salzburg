@@ -1,6 +1,8 @@
 /**
  * @file   stereopsis.h
  *
+ * Richárd, Sergi, Mathesh and Carlos.
+ *
  * @brief ROS wrapper for detection of (spheric) red obstacles.
  * @brief Publishes image points corresponding to object centers.
  */
@@ -31,6 +33,8 @@
 #include <Eigen/Geometry>
 #include <eigen_conversions/eigen_msg.h>
 
+#include "kalman_tracking_3d/kalman_tracking_3d.h"
+
 namespace stereo_vision_avd
 {
 class Stereopsis
@@ -59,6 +63,9 @@ private:
 
   cv::Mat extrinsic_projection_left_, extrinsic_projection_right_;  // Final stereo projection matrices
 
+  kalman_tracking_3d::KalmanTacking3d* kalman_;
+  cv::KalmanFilter kf_;
+
 public:
   Stereopsis(ros::NodeHandle node_handle);
   ~Stereopsis();
@@ -82,6 +89,8 @@ public:
   // Callbacks
   void synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr& left_msg,
                                   const rovi2_msgs::points2d::ConstPtr& right_msg);
+
+  void freeMemory();
 };
 }  // namespace stereo_vision_avd
 

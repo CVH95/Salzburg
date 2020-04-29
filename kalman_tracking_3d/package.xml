@@ -1,20 +1,17 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>anytime_planning_avd</name>
+  <name>kalman_tracking_3d</name>
   <version>0.0.0</version>
-  <description>The anytime_planning_avd package</description>
+  <description>The kalman_tracking_3d package</description>
 
   <maintainer email="cavie17@student.sdu.com">Carlos</maintainer>
 
   <license>TODO</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>rosconsole</depend>
   <depend>roscpp</depend>
   <depend>roslib</depend>
-  <depend>gazebo_msgs</depend>
-  <depend>rovi2_msgs</depend>
-  <depend>geometry_msgs</depend>
+  <depend>eigen</depend>
 
   <export>
   </export>

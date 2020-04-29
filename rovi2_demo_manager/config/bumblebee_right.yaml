@@ -2,8 +2,8 @@
 ---
 image_width: 1024
 image_height: 768
-camera_name: stereo_cam/right
-camera_frame: cam_link
+camera_name: bumblebee2
+camera_frame: bumblebee2_link_optical
 camera_matrix:  !!opencv-matrix
   rows: 3
   cols: 3

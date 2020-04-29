@@ -20,9 +20,7 @@
   <depend>eigen_conversions</depend>
   <depend>eigen</depend>
   <depend>message_filters</depend>
-
-  <!-- Test  -->
-  <!-- <test_depend>roslaunch</test_depend> -->
+  <depend>kalman_tracking_3d</depend>
 
   <export>
   </export>

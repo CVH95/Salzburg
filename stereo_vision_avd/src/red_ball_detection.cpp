@@ -1,6 +1,8 @@
 /**
  * @file   red_ball_detection.cpp
  *
+ * Richárd, Sergi, Mathesh and Carlos.
+ *
  * @brief ROS wrapper for detection of (spheric) red obstacles.
  * @brief Publishes image points corresponding to object centers.
  */
@@ -134,9 +136,9 @@ void RedBallDetection::findCenters(cv::Mat image)
     cv::Mat box = cv::Mat::zeros(red_ball.size(), CV_8UC3);
     for (int i = 0; i < contours.size(); i++)
     {
-      drawContours(box, contours, -1, cv::Scalar(0, 0, 255), 1);
-      rectangle(box, bound_rect[i], cv::Scalar(0, 255, 255), 1, 8, 0);
-      circle(box, center[i], radius[i], cv::Scalar(255, 0, 0), 1, 8, 0);
+      cv::drawContours(box, contours, -1, cv::Scalar(0, 0, 255), 1);
+      cv::rectangle(box, bound_rect[i], cv::Scalar(0, 255, 255), 3, 8, 0);
+      cv::circle(box, center[i], radius[i], cv::Scalar(0, 0, 255), -1, 8, 0);
     }
 
     // Publish

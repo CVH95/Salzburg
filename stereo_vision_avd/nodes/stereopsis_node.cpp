@@ -1,6 +1,8 @@
 /**
  * @file   stereopsis_node.cpp
  *
+ * Richárd, Sergi, Mathesh and Carlos.
+ *
  * @brief ROS wrapper for detection of (spheric) red obstacles.
  * @brief Publishes image points corresponding to object centers.
  */
@@ -14,7 +16,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "stereopsis");
+  ros::init(argc, argv, "triangulation");
   ros::NodeHandle nh;
   std::string left_img_topic, right_img_topic;
   ros::param::get("left_img_topic", left_img_topic);
@@ -41,6 +43,11 @@ int main(int argc, char** argv)
 
   ROS_INFO("Initialized Register Callback");
 
-  ros::spin();
+  while (ros::ok())
+  {
+    ros::spinOnce();
+  }
+
+  stereo_triangulation.freeMemory();
   return 0;
 }

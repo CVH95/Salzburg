@@ -1,6 +1,8 @@
 /**
  * @file   red_ball_detection.h
  *
+ * Richárd, Sergi, Mathesh and Carlos.
+ *
  * @brief ROS wrapper for detection of (spheric) red obstacles.
  * @brief Publishes image points corresponding to object centers.
  */
