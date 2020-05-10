@@ -48,7 +48,7 @@
 		<material>Gazebo/Grey</material>
 	</gazebo>
 
-	<!-- Camera -->
+	<!-- Stereo Camera -->
 	<xacro:include filename="$(find pointgrey_camera_description)/urdf/pointgrey_bumblebee2.urdf.xacro" />
     <BB2-08S2C-60 frame="bumblebee2_link" name="bumblebee2" />
 
@@ -56,7 +56,13 @@
         <origin xyz="0.87 1.13 2.75" rpy="0.0 1.0 -2.35" />
         <parent link="world" />
         <child link="bumblebee2_link" />
-    </joint>
+	</joint>
+
+	<!-- Kinect Camera -->
+	<xacro:include filename="$(find workcell_scene_description)/urdf/asus_camera.urdf.xacro" />
+	<xacro:asus_camera name="asus" parent="world" min_range="0.2" max_range="10">
+		<origin xyz="-0.87 1.13 2.75" rpy="0.0 1.0 -0.785" />
+	</xacro:asus_camera>
 
 	<!-- Red Ball -->
 	<xacro:include filename="$(find workcell_scene_description)/urdf/red_ball.urdf"/>

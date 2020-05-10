@@ -7,7 +7,7 @@
  * @brief Publishes image points corresponding to object centers.
  */
 
-#include "stereo_vision_avd/stereopsis.h"
+#include "perception_avd/stereopsis.h"
 
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/synchronizer.h>
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   ROS_INFO(" * %s", left_img_topic.c_str());
   ROS_INFO(" * %s", right_img_topic.c_str());
 
-  stereo_vision_avd::Stereopsis stereo_triangulation(nh);
+  perception_avd::Stereopsis stereo_triangulation(nh);
   stereo_triangulation.initPublishers();
 
   // Call Subs synchronizer
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 
   // boost::bind requires an extra argument which is a pointer to the instance of that class.
   sync.registerCallback(
-      boost::bind(&stereo_vision_avd::Stereopsis::synchronized_triangulation, stereo_triangulation, _1, _2));
+      boost::bind(&perception_avd::Stereopsis::synchronized_triangulation, stereo_triangulation, _1, _2));
 
   ROS_INFO("Initialized Register Callback");
 

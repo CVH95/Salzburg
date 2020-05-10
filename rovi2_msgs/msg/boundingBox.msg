@@ -1,0 +1,5 @@
+int16 object_id
+point2d top_left
+point2d top_right
+point2d bottom_left
+point2d bottom_right

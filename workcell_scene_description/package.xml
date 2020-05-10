@@ -11,6 +11,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>pointgrey_camera_description</depend>
+  <depend>hector_models_description</depend>
   <depend>ur_description</depend>
 
   <exec_depend>joint_state_publisher</exec_depend>

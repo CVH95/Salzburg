@@ -2,3 +2,4 @@ image_topic: /bumblebee2/left/image_raw
 points_topic: points
 output_topic: result
 publish_images: true
+stereo_vision: true

@@ -8,7 +8,7 @@
 
     <rosparam command="load" file="$(arg config)"/>
 
-    <node name="triangulation_node" pkg="stereo_vision_avd" type="stereopsis_node" output="screen"></node>
+    <node name="triangulation_node" pkg="perception_avd" type="stereopsis_node" output="screen"></node>
         <param name="left_img_topic" type="str" value="$(arg left_img_topic)"/>
         <param name="right_img_topic" type="str" value="$(arg right_img_topic)"/>
         <param name="left_camera_calibration" type="str" value="$(arg left_camera_calibration)"/>

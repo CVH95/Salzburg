@@ -16,7 +16,7 @@
   <depend>hector_sensors_description</depend>
 
   <exec_depend>gazebo_ros</exec_depend>
-  <exec_depend>stereo_vision_avd</exec_depend>
+  <exec_depend>perception_avd</exec_depend>
 
   <test_depend>roslaunch</test_depend>
 

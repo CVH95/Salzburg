@@ -7,11 +7,11 @@
 
     <group ns="left">
         <rosparam  command="load" file="$(arg left_detector_config)"/>
-        <node name="left_detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+        <node name="left_detector" pkg="perception_avd" type="red_ball_detection_node" output="screen" />
     </group>
 
     <group ns="right">
         <rosparam command="load" file="$(arg right_detector_config)"/>
-        <node name="detector" pkg="stereo_vision_avd" type="red_ball_detection_node" output="screen" />
+        <node name="detector" pkg="perception_avd" type="red_ball_detection_node" output="screen" />
     </group>
 </launch>

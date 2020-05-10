@@ -13,6 +13,8 @@ add_message_files(
   point3d.msg
   points2d.msg
   points3d.msg
+  boundingBox.msg
+  boundingBoxes.msg
 )
 
 generate_messages(DEPENDENCIES

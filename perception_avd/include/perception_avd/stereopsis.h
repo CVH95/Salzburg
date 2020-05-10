@@ -20,6 +20,7 @@
 #include <ros/package.h>
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/aruco.hpp>
 
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/transform_broadcaster.h>
@@ -28,6 +29,8 @@
 #include "rovi2_msgs/point3d.h"
 #include "rovi2_msgs/points2d.h"
 #include "rovi2_msgs/points3d.h"
+#include "rovi2_msgs/boundingBox.h"
+#include "rovi2_msgs/boundingBoxes.h"
 #include "geometry_msgs/TransformStamped.h"
 
 #include <Eigen/Geometry>
@@ -35,7 +38,7 @@
 
 #include "kalman_tracking_3d/kalman_tracking_3d.h"
 
-namespace stereo_vision_avd
+namespace perception_avd
 {
 class Stereopsis
 {
@@ -44,15 +47,17 @@ private:
 
   // Pubs & Subs
   ros::Publisher ws_monitoring_pub_;
+  ros::Subscriber corners_sub_;
 
   // Detection msgs
   rovi2_msgs::points2d left_detection_;
   rovi2_msgs::point2d right_detection_;
 
   // Private params
-  std::string pub_topic_;
+  std::string pub_topic_, subscribe_topic_;
   std::string left_cam_calib_, right_cam_calib_;
-  double baseline_;
+  bool monocular_;
+  double baseline_, f_, diameter_;
 
   // Stereo vision parameters
   std::string left_camera_frame_, right_camera_frame_;
@@ -66,12 +71,17 @@ private:
   kalman_tracking_3d::KalmanTacking3d* kalman_;
   cv::KalmanFilter kf_;
 
+  // Monocular triangulation
+  std::vector<cv::Point2f> getCornersFromBox(rovi2_msgs::boundingBox bb);
+  void cornersCallback(const rovi2_msgs::boundingBoxes& msg);
+
 public:
   Stereopsis(ros::NodeHandle node_handle);
   ~Stereopsis();
 
   // Pubs & Subs
   void initPublishers();
+  void initSubscribers();
   bool readParams();
 
   // Triangulation
@@ -80,6 +90,8 @@ public:
                                                                                     rovi2_msgs::points2d right_array);
   rovi2_msgs::points3d
   triangulateObjectsCv(std::vector<std::tuple<rovi2_msgs::point2d, rovi2_msgs::point2d> > center_pairs);
+  rovi2_msgs::points3d
+  triangulateObjectsParallelCam(std::vector<std::tuple<rovi2_msgs::point2d, rovi2_msgs::point2d> > center_pairs);
 
   // Other methods
   void broadcastDetectedTf(rovi2_msgs::point3d p, std::string id);
@@ -92,6 +104,6 @@ public:
 
   void freeMemory();
 };
-}  // namespace stereo_vision_avd
+}  // namespace perception_avd
 
 #endif  // STEREOPSIS_H

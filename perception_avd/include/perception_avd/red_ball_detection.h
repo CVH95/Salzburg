@@ -24,8 +24,10 @@
 #include "sensor_msgs/image_encodings.h"
 #include "rovi2_msgs/point2d.h"
 #include "rovi2_msgs/points2d.h"
+#include "rovi2_msgs/boundingBox.h"
+#include "rovi2_msgs/boundingBoxes.h"
 
-namespace stereo_vision_avd
+namespace perception_avd
 {
 class RedBallDetection
 {
@@ -39,13 +41,15 @@ private:
 
   // Params
   std::string points_topic_, output_topic_, subscribe_topic_;
-  bool publish_result_image_;
+  bool publish_result_image_, stereo_vision_;
 
   // Callback
   void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
 
   // Detection methods
   void findCenters(cv::Mat frame);
+  std::vector<cv::Point2f> getCornersFromRect(cv::Rect rectangle);
+  rovi2_msgs::boundingBox getBoxFromRect(cv::Rect rectangle);
 
 public:
   RedBallDetection(ros::NodeHandle node_handle);
@@ -55,6 +59,6 @@ public:
   void initSubscribers();
   bool readParams();
 };
-}  // namespace stereo_vision_avd
+}  // namespace perception_avd
 
 #endif  // RED_BALL_DETECTION

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config" default="$(find rovi2_demo_manager)/config/kinect_params.yaml"/>
+    <rosparam  command="load" file="$(arg config)"/>
+
+    <!-- Detector -->
+    <node name="kinect_detector" pkg="perception_avd" type="kinect_detection_node" output="screen" />
+</launch>

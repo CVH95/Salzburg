@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="left_detector_config" default="$(find rovi2_demo_manager)/config/monocular.yaml"/>
+    <arg name="left_camera_calibration" default="$(find rovi2_demo_manager)/config/sim_left.yaml"/>
+    <arg name="right_camera_calibration" default="$(find rovi2_demo_manager)/config/sim_right.yaml"/>
+    <rosparam  command="load" file="$(arg left_detector_config)"/>
+
+    <!-- Detector -->
+    <node name="left_detector" pkg="perception_avd" type="red_ball_detection_node" output="screen" />
+
+    <!-- Triangulation -->
+    <node name="triangulation_node" pkg="perception_avd" type="monocular_node" output="screen"></node>
+        <param name="left_camera_calibration" type="str" value="$(arg left_camera_calibration)"/>
+        <param name="right_camera_calibration" type="str" value="$(arg right_camera_calibration)"/>
+
+</launch>

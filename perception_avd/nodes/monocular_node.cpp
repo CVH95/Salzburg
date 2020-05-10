@@ -1,5 +1,5 @@
 /**
- * @file   red_ball_detection_node.cpp
+ * @file   stereopsis_node.cpp
  *
  * Richárd, Sergi, Mathesh and Carlos.
  *
@@ -7,17 +7,17 @@
  * @brief Publishes image points corresponding to object centers.
  */
 
-#include "stereo_vision_avd/red_ball_detection.h"
+#include "perception_avd/stereopsis.h"
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "detector");
+  ros::init(argc, argv, "triangulation");
   ros::NodeHandle nh;
 
-  stereo_vision_avd::RedBallDetection detector(nh);
+  perception_avd::Stereopsis monocular_stereopsis(nh);
 
-  detector.initPublishers();
-  detector.initSubscribers();
+  monocular_stereopsis.initPublishers();
+  monocular_stereopsis.initSubscribers();
 
   ros::spin();
   return 0;
