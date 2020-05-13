@@ -10,46 +10,43 @@ find_package(catkin REQUIRED COMPONENTS
   rovi2_msgs
   gazebo_msgs
   geometry_msgs
+  tf2_ros
 )
 
-# find_package(OpenCV 3 REQUIRED)
-# find_package(Boost REQUIRED)
-# find_package(Eigen3 REQUIRED)
+find_package(Boost REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 catkin_package(
-#    INCLUDE_DIRS include
-#    LIBRARIES red_ball_detection stereopsis
+    INCLUDE_DIRS include
+    LIBRARIES anytime_planning
 )
 
 include_directories(
-  # include
+  include
   ${catkin_INCLUDE_DIRS}
-#   ${OpenCV_INCLUDE_DIRS}
-#   ${EIGEN3_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 # Libraries
-# add_library(red_ball_detection src/red_ball_detection.cpp)
-# target_link_libraries(red_ball_detection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-
-# add_library(stereopsis src/stereopsis.cpp)
-# target_link_libraries(stereopsis ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_library(anytime_planning src/anytime_planning.cpp)
+target_link_libraries(anytime_planning ${catkin_LIBRARIES})
 
 # Nodes
 add_executable(random_ball_motion_node nodes/random_ball_motion_node.cpp)
-target_link_libraries(random_ball_motion_node ${catkin_LIBRARIES} ) # ${OpenCV_LIBRARIES} red_ball_detection
+target_link_libraries(random_ball_motion_node ${catkin_LIBRARIES} )
 
-# add_executable(stereopsis_node nodes/stereopsis_node.cpp)
-# target_link_libraries(stereopsis_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} stereopsis)
+add_executable(anytime_planning_node nodes/anytime_planning_node.cpp)
+target_link_libraries(anytime_planning_node ${catkin_LIBRARIES} anytime_planning)
 
-install(TARGETS random_ball_motion_node
+install(TARGETS anytime_planning random_ball_motion_node anytime_planning_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)

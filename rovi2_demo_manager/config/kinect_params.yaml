@@ -1,5 +1,6 @@
-pose_topic: kinect/obstacle
-input_cloud_topic: /asus/depth/points
-camera_frame: asus_depth_optical_frame
-publish_pcl: true
-output_cloud_topic: kinect/ball/points
+pose_topic: kinect/poses
+depth_image_topic: /asus/depth/image_raw
+rgb_image_topic: /asus/rgb/image_raw
+publish_result_image: true
+result_image_topic: kinect/result
+ball_radius: 0.1

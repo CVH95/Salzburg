@@ -25,12 +25,10 @@
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/transform_broadcaster.h>
 
-#include "rovi2_msgs/point2d.h"
+#include "perception_avd/common_perception.h"
+
 #include "rovi2_msgs/point3d.h"
-#include "rovi2_msgs/points2d.h"
 #include "rovi2_msgs/points3d.h"
-#include "rovi2_msgs/boundingBox.h"
-#include "rovi2_msgs/boundingBoxes.h"
 #include "geometry_msgs/TransformStamped.h"
 
 #include <Eigen/Geometry>
@@ -72,7 +70,6 @@ private:
   cv::KalmanFilter kf_;
 
   // Monocular triangulation
-  std::vector<cv::Point2f> getCornersFromBox(rovi2_msgs::boundingBox bb);
   void cornersCallback(const rovi2_msgs::boundingBoxes& msg);
 
 public:
@@ -93,16 +90,14 @@ public:
   rovi2_msgs::points3d
   triangulateObjectsParallelCam(std::vector<std::tuple<rovi2_msgs::point2d, rovi2_msgs::point2d> > center_pairs);
 
-  // Other methods
-  void broadcastDetectedTf(rovi2_msgs::point3d p, std::string id);
-  void printMatrix(cv::Mat matrix);
-  float euclideanDistance(rovi2_msgs::point2d left_point, rovi2_msgs::point2d right_point);
-
   // Callbacks
-  void synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr& left_msg,
-                                  const rovi2_msgs::points2d::ConstPtr& right_msg);
+  void synchronizedTriangulation(const rovi2_msgs::points2d::ConstPtr& left_msg,
+                                 const rovi2_msgs::points2d::ConstPtr& right_msg);
 
   void freeMemory();
+
+  // Public params
+  std::string left_img_topic_, right_img_topic_;
 };
 }  // namespace perception_avd
 

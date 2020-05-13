@@ -16,16 +16,12 @@
 
 #include <ros/package.h>
 #include <ros/ros.h>
-
 #include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
+
+#include "perception_avd/common_perception.h"
 
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/image_encodings.h"
-#include "rovi2_msgs/point2d.h"
-#include "rovi2_msgs/points2d.h"
-#include "rovi2_msgs/boundingBox.h"
-#include "rovi2_msgs/boundingBoxes.h"
 
 namespace perception_avd
 {
@@ -45,11 +41,6 @@ private:
 
   // Callback
   void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
-
-  // Detection methods
-  void findCenters(cv::Mat frame);
-  std::vector<cv::Point2f> getCornersFromRect(cv::Rect rectangle);
-  rovi2_msgs::boundingBox getBoxFromRect(cv::Rect rectangle);
 
 public:
   RedBallDetection(ros::NodeHandle node_handle);

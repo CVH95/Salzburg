@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="config" default="$(find rovi2_demo_manager)/config/kinect_params.yaml"/>
-    <rosparam  command="load" file="$(arg config)"/>
+    <arg name="config_file" default="$(find rovi2_demo_manager)/config/kinect_params.yaml"/>
+    <arg name="calibration_file" default="$(find rovi2_demo_manager)/config/asus.yaml"/>>
 
-    <!-- Detector -->
-    <node name="kinect_detector" pkg="perception_avd" type="kinect_detection_node" output="screen" />
+    <rosparam command="load" file="$(arg config_file)"/>
+
+    <!-- Kinect processing -->
+    <node name="kinect_detector" pkg="perception_avd" type="kinect_detection_node" output="screen"></node>
+        <param name="camera_calibration" type="str" value="$(arg calibration_file)"/>
 </launch>

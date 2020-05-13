@@ -18,6 +18,7 @@
 #include <ros/ros.h>
 
 #include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 #include <pcl/common/common.h>
 #include <pcl/common/centroid.h>
@@ -25,17 +26,11 @@
 #include <pcl/segmentation/region_growing_rgb.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-#include "sensor_msgs/PointCloud2.h"
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/transform_broadcaster.h>
+#include "perception_avd/common_perception.h"
 
-#include "rovi2_msgs/point2d.h"
-#include "rovi2_msgs/point3d.h"
-#include "rovi2_msgs/points2d.h"
-#include "rovi2_msgs/points3d.h"
-#include "rovi2_msgs/boundingBox.h"
-#include "rovi2_msgs/boundingBoxes.h"
-#include "geometry_msgs/TransformStamped.h"
+#include "sensor_msgs/Image.h"
+#include "sensor_msgs/image_encodings.h"
+#include <tf2_ros/transform_listener.h>
 
 #include <Eigen/Geometry>
 #include <eigen_conversions/eigen_msg.h>
@@ -50,24 +45,21 @@ private:
   ros::NodeHandle nh_;
 
   // Pubs & Subs
-  ros::Publisher result_pub_, pose_pub_;
-  ros::Subscriber sub_;
+  ros::Publisher pose_pub_, result_pub_;
 
   // Params
-  std::string result_topic_, subscribe_topic_, pose_topic_;
+  std::string pose_topic_, cam_calib_, result_image_topic_;
+  bool publish_result_image_;
+  double ball_radius_;
+
+  // Camera data
+  cv::Mat k_instrinsics_left_, dist_coeffs_left_;
+  cv::Point2d camera_center_;
+  double focal_length_;
   std::string camera_frame_;
-  bool publish_pcl_;
 
   kalman_tracking_3d::KalmanTacking3d* kalman_;
   cv::KalmanFilter kf_;
-
-  // Callback
-  void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg);
-
-  // PCL processing
-  pcl::PointCloud<pcl::PointXYZRGB> colorSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud);
-  // void objectClustering(pcl::PointCloud<pcl::PointXYZRGB>& cloud);
-  Eigen::Vector3d estimateClusterPose(pcl::PointCloud<pcl::PointXYZRGB>& cloud);
 
 public:
   KinectDetection(ros::NodeHandle node_handle);
@@ -75,9 +67,12 @@ public:
 
   bool readParams();
   void initPublishers();
-  void initSubscribers();
+  void setCameraData();
 
-  void broadcastDetectedTf(rovi2_msgs::point3d p, std::string id);
+  void synchronizedCallback(const sensor_msgs::ImageConstPtr& rgb, const sensor_msgs::ImageConstPtr& depth);
+
+  // Public params
+  std::string image_topic_, depth_topic_;
 };
 }  // namespace perception_avd
 

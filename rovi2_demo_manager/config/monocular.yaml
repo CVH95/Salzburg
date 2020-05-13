@@ -1,5 +1,5 @@
 # Detector params
-image_topic: /bumblebee2/left/image_raw
+image_topic: /asus/rgb/image_raw
 points_topic: left/points
 output_topic: left/result
 publish_images: true
@@ -7,8 +7,6 @@ stereo_vision: false
 
 # Monocular stereopsis params
 pub_topic: triangulation/points
-#left_camera_calibration: /home/charlie/Workspace/ROS/obs_avoidance_ws/src/rovi2_demo_manager/config/bumblebee_left.yaml
-#right_camera_calibration: /home/charlie/Workspace/ROS/obs_avoidance_ws/src/rovi2_demo_manager/config/bumblebee_right.yaml
 stereo_baseline: 0.12
 monocular: true
 monocular_topic: left/points

@@ -33,6 +33,9 @@ Stereopsis::Stereopsis(ros::NodeHandle node_handle) : nh_(node_handle)
     ROS_INFO(" * Stereo baseline: %f", baseline_);
   }
 
+  ROS_INFO(" * Left image: %s", left_img_topic_.c_str());
+  ROS_INFO(" * Right image: %s", right_img_topic_.c_str());
+
   ros::Duration(0.5).sleep();
 
   kalman_ = new kalman_tracking_3d::KalmanTacking3d("velocity");
@@ -57,6 +60,8 @@ bool Stereopsis::readParams()
   success = success && ros::param::get("diameter", diameter_);
   success = success && ros::param::get("monocular", monocular_);
   success = success && ros::param::get("monocular_topic", subscribe_topic_);
+  success = success && ros::param::get("left_img_topic", left_img_topic_);
+  success = success && ros::param::get("right_img_topic", right_img_topic_);
   return success;
 }
 
@@ -230,48 +235,8 @@ rovi2_msgs::points3d Stereopsis::triangulateObjectsParallelCam(
   return locations;
 }
 
-void Stereopsis::printMatrix(cv::Mat matrix)
-{
-  std::cout << "Matrix [" << matrix.rows << "x" << matrix.cols << "] = " << std::endl;
-  for (int i = 0; i < matrix.rows; i++)
-  {
-    for (int j = 0; j < matrix.cols; j++)
-    {
-      std::cout << matrix.at<double>(i, j) << "  ";
-    }
-    std::cout << std::endl;
-  }
-}
-
-float Stereopsis::euclideanDistance(rovi2_msgs::point2d left_point, rovi2_msgs::point2d right_point)
-{
-  float difference = (right_point.x - left_point.x) * (right_point.x - left_point.x) +
-                     (right_point.y - left_point.y) * (right_point.y - left_point.y);
-  return sqrt(difference);
-}
-
-void Stereopsis::broadcastDetectedTf(rovi2_msgs::point3d p, std::string id)
-{
-  static tf2_ros::TransformBroadcaster br;
-
-  geometry_msgs::TransformStamped ts;
-  ts.header.stamp = ros::Time::now();
-  ts.header.frame_id = left_camera_frame_;
-  ts.child_frame_id = "detection_" + id;
-
-  ts.transform.translation.x = p.x;
-  ts.transform.translation.y = p.y;
-  ts.transform.translation.z = p.z;
-  ts.transform.rotation.x = 0.0;
-  ts.transform.rotation.y = 0.0;
-  ts.transform.rotation.z = 0.0;
-  ts.transform.rotation.w = 1.0;
-
-  br.sendTransform(ts);
-}
-
-void Stereopsis::synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr& left_msg,
-                                            const rovi2_msgs::points2d::ConstPtr& right_msg)
+void Stereopsis::synchronizedTriangulation(const rovi2_msgs::points2d::ConstPtr& left_msg,
+                                           const rovi2_msgs::points2d::ConstPtr& right_msg)
 {
   rovi2_msgs::points2d left_detection = *left_msg;
   rovi2_msgs::points2d right_detection = *right_msg;
@@ -309,7 +274,7 @@ void Stereopsis::synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr
     k.z = track.z();
     k.object_id = p.object_id;
 
-    broadcastDetectedTf(k, std::to_string(i));
+    broadcastDetectedTf(k, std::to_string(i), left_camera_frame_);
     obstacle_track.points.push_back(k);
     ROS_INFO("Tracked obstacle at (%f, %f, %f)", k.x, k.y, k.z);
   }
@@ -319,22 +284,6 @@ void Stereopsis::synchronized_triangulation(const rovi2_msgs::points2d::ConstPtr
   ws_monitoring_pub_.publish(obstacle_track);
 
   ROS_INFO("---------------");
-}
-
-std::vector<cv::Point2f> Stereopsis::getCornersFromBox(rovi2_msgs::boundingBox bb)
-{
-  std::vector<cv::Point2f> corners;
-  cv::Point2f top_left(bb.top_left.x, bb.top_left.y);
-  cv::Point2f top_right(bb.top_right.x, bb.top_right.y);
-  cv::Point2f bottom_left(bb.bottom_left.x, bb.bottom_left.y);
-  cv::Point2f bottom_right(bb.bottom_right.x, bb.bottom_right.y);
-
-  corners.push_back(top_left);
-  corners.push_back(top_right);
-  corners.push_back(bottom_left);
-  corners.push_back(bottom_right);
-
-  return corners;
 }
 
 void Stereopsis::cornersCallback(const rovi2_msgs::boundingBoxes& msg)
@@ -376,7 +325,7 @@ void Stereopsis::cornersCallback(const rovi2_msgs::boundingBoxes& msg)
     k.z = track.z();
     k.object_id = msg.box[i].object_id;
 
-    broadcastDetectedTf(k, std::to_string(i));
+    broadcastDetectedTf(k, std::to_string(i), left_camera_frame_);
     obstacle_track.points.push_back(k);
 
     ROS_INFO("Tracked obstacle %i at (%f, %f, %f)", i, k.x, k.y, k.z);

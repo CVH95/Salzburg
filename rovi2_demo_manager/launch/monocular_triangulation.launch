@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="left_detector_config" default="$(find rovi2_demo_manager)/config/monocular.yaml"/>
-    <arg name="left_camera_calibration" default="$(find rovi2_demo_manager)/config/sim_left.yaml"/>
+    <arg name="left_camera_calibration" default="$(find rovi2_demo_manager)/config/asus.yaml"/>
     <arg name="right_camera_calibration" default="$(find rovi2_demo_manager)/config/sim_right.yaml"/>
     <rosparam  command="load" file="$(arg left_detector_config)"/>
 
