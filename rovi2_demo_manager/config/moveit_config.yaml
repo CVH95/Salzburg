@@ -1,0 +1,14 @@
+planning_frame:
+    - value: "world"
+end_effector_frame:
+    - value: "ee_link"
+planner_id:
+    - value: "RRTConnectkConfigDefault"
+home_position:
+    - value: [0.916, -1.170, 1.351, -0.186, 0.916, 0.011]
+pick:
+    - value: [0.920, -0.913, 1.646, -0.739, 0.920, 0.011]
+place:
+    - value: [1.630, -0.977, 1.711, -0.739, 1.630, 0.008]
+place_approach:
+    - value: [1.626, -1.228, 1.423, -0.200, 1.626, 0.008]

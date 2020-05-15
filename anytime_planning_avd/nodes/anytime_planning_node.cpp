@@ -14,11 +14,14 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "anytime_planning_node");
   ros::NodeHandle nh;
 
-  anytime_planning_avd::AnytimePlanning planner(nh);
+  ros::AsyncSpinner spinner(4);
+  spinner.start();
 
-  planner.initPublishers();
+  anytime_planning_avd::AnytimePlanning planner(nh);
   planner.initSubscribers();
 
-  ros::spin();
+  planner.runDemo();
+
+  ros::waitForShutdown();
   return 0;
 }

@@ -111,20 +111,16 @@ void KinectDetection::synchronizedCallback(const sensor_msgs::ImageConstPtr& rgb
     {
       rovi2_msgs::point2d point_i = vector_of_points.points[i];
 
-      float final_z =
-          (float)ball_radius_ + depth_img.at<float>(static_cast<int>(point_i.y), static_cast<int>(point_i.x));
+      float final_z = (float)depth_img.at<float>(static_cast<int>(point_i.y), static_cast<int>(point_i.x));
       float final_x = (float)(point_i.x - camera_center_.x) * final_z / focal_length_;
       float final_y = (float)(point_i.y - camera_center_.y) * final_z / focal_length_;
 
       ROS_INFO("Detected obstacle %i at (%f, %f, %f)", i, final_x, final_y, final_z);
 
-      // float depth_corrected = (float) final_z + ball_radius_;
-
       // Kalman filte
       cv::Mat_<float> measurement(3, 1);
       measurement(0) = final_x;
       measurement(1) = final_y;
-      // measurement(2) = (float) ball_radius_ + final_z;
       measurement(2) = final_z;
 
       Eigen::Vector3f track = kalman_->kalmanFilter3d(measurement, kf_);

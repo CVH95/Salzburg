@@ -17,6 +17,10 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 
+#include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/planning_scene_interface/planning_scene_interface.h>
+
+#include "moveit_msgs/CollisionObject.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
 #include "geometry_msgs/TransformStamped.h"
@@ -41,7 +45,7 @@ void sendTf(geometry_msgs::Pose pose)
   ts.header.frame_id = "world";
   ts.child_frame_id = "red_ball";
 
-  static tf2_ros::StaticTransformBroadcaster br;
+  static tf2_ros::TransformBroadcaster br;
   br.sendTransform(ts);
 }
 
@@ -53,12 +57,16 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "red_ball");
   ros::NodeHandle nh;
 
-  std::string topic, link, ref;
-  ros::param::get("gazebo_topic", topic);
-  ros::param::get("link", link);
-  ros::param::get("reference", ref);
+  std::string gz_topic, link_gz, link_rviz, ref_rviz, ref_gz;
+  std::string planning_group;
+  ros::param::get("planning_group", planning_group);
+  ros::param::get("gazebo_topic", gz_topic);
+  ros::param::get("link_gazebo", link_gz);
+  ros::param::get("link_rviz", link_rviz);
+  ros::param::get("reference_gazebo", ref_gz);
+  ros::param::get("reference_rviz", ref_rviz);
 
-  ros::Publisher pub = nh.advertise<gazebo_msgs::LinkState>(topic, 1);
+  ros::Publisher pub = nh.advertise<gazebo_msgs::LinkState>(gz_topic, 1);
 
   double x_min = -0.15;
   double y_min = 0.55;
@@ -71,17 +79,22 @@ int main(int argc, char** argv)
   while (nh.ok())
   {
     gazebo_msgs::LinkState random_state;
-    random_state.link_name = link;
-    random_state.reference_frame = ref;
+    random_state.link_name = link_gz;
+    random_state.reference_frame = ref_gz;
 
-    random_state.pose.position.x = doubleRand(x_min, x_max);
-    random_state.pose.position.y = doubleRand(y_min, y_max);
-    random_state.pose.position.z = doubleRand(z_min, z_max);
-    random_state.pose.orientation.x = 0.0;
-    random_state.pose.orientation.y = 0.0;
-    random_state.pose.orientation.z = 0.0;
-    random_state.pose.orientation.w = 1.0;
+    // Define pose
+    geometry_msgs::Pose pose;
+    pose.position.x = doubleRand(x_min, x_max);
+    pose.position.y = doubleRand(y_min, y_max);
+    pose.position.z = doubleRand(z_min, z_max);
+    pose.orientation.x = 0.0;
+    pose.orientation.y = 0.0;
+    pose.orientation.z = 0.0;
+    pose.orientation.w = 1.0;
 
+    random_state.pose = pose;
+
+    // Define twist (gazebo msg)
     random_state.twist.angular.x = 0.0;
     random_state.twist.angular.y = 0.0;
     random_state.twist.angular.z = 0.0;

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_file" default="$(find rovi2_demo_manager)/config/planner_config.yaml"/>
+    <arg name="moveit_file" default="$(find rovi2_demo_manager)/config/moveit_config.yaml"/>>
+
+    <rosparam command="load" file="$(arg config_file)"/>
+
+    <!-- Kinect processing -->
+    <node name="anytime_planner" pkg="anytime_planning_avd" type="anytime_planning_node" output="screen"></node>
+        <param name="moveit_file" type="str" value="$(arg moveit_file)"/>
+</launch>
