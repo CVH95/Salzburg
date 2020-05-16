@@ -1,5 +1,5 @@
 pub_topic: triangulation/points
 stereo_baseline: 0.012
 monocular: false
-diameter: 0.2
+diameter: 0.1
 monocular_topic: none

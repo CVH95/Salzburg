@@ -1,201 +1,87 @@
-# ROVI 2 Final Project: OBJECT AVOIDANCE
+# ROVI2 PROJECT - OBSTACLE AVOIDANCE
 
-This project was developed during the course of Robotics and Computer Vision 2 (spring 2018), at University of Southern Denmark, by Carlos, Richárd, Sergi and Mathesh. The setup is a WorkCell composed by a UR5 robot arm mounted on a table with a BumbleBee 2 stereo camera mounted on a corner. The project consisted on an application for dynamic path planning capable of real time replanning when an obstacle is placed interrupting its route, from an initial configuration q\_start to a final one q\_end (like in a pick & place). As obstacle object we used an small red ball.
+This project was developed during the course of Robotics and Computer Vision 2 (spring 2018), at University of Southern Denmark, by Carlos, Richárd, Sergi and Mathesh. This simulation is an adaptation of the real setup, using an RGBD sensor, the _Moveit!_ framework for planning and a simulated red ball with random movement. The original development is [branch](https://github.com/CVH95/Salzburg/tree/rovi2-2018). Also, the [wiki](https://github.com/CVH95/Salzburg/wiki) belongs to the original development.
 
-## A. Download and build repository
+![demo gif](doc/demo.gif)
 
-```sh
-$ cd ~/catkin_ws/src/
-$ git clone https://github.com/CVEarp/ROVI2_Object_Avoidance.git
-```
+## Install instructions
 
-To build ROS packages (in ROVI2\_Object\_Avoidance/ROS\_pkgs/)
+Use python catkin tools to manage the workspace:
 
 ```sh
-$ catkin_make
+sudo apt install python-catkin-tools
 ```
 
-RWStudio & Non-ROS programs have to b build individualy.
-
-## B. Robot connection setup.
+Clone and install dependencies
 
 ```sh
-$ sudo vim /etc/hosts
+cd ~
+mkdir -p rovi2_ws/src && cd rovi2_ws/src
+git clone https://github.com/CVEarp/ROVI2_Object_Avoidance.git
+
+# Install dependencies via rosinstall and rosdeo
+wstool update
+cd ..
+rosdep update
+rosdep install -i --from-paths src/ -y -r
+
+# Build
+catkin init
+catkin build
 ```
 
-1. Add workcell and robot IP:
+## Usage instructions
 
-```
-192.168.100.52    WC2
-192.168.100.2     UR2
-```
-
-2. Disable WiFi and creare ethernet connection with:
-
-```
-Name: roviWorkcell
-IP: 192.168.100.25
-Netmask: 255.255.255.0
-Gateway: -
-```
-
-3. Check IP and ping both the robot and the workcell
+Use the package `rovi2_demo_manager` to run the demo, all the necessary `yaml` configuration and `launch` files are there. In separate terminals:
 
 ```sh
-$ hostname -I
-$ ping 192.168.100.52
-$ ping 192.168.100.2
+# Simulation environment and configurations
+roslaunch rovi2_demo_manager scene_gazebo.launch
+
+# 3D detection
+roslaunch rovi2_demo_manager kinect_camera.launch
+
+# Planner
+roslaunch rovi2_demo_manager anytime_planner.launch
 ```
 
-4.  Edit .xml parameter file with the IPs of the robot and the laptop
+- - -
 
-```sh
-$ source /opt/ros/kinetic/setup.bash
-$ source catkin_ws/devel/setup.bash
-$ vim catkin_ws/src/caros/hwcomponents/caros_universalrobot/launch/caros_universalrobot_param.xml
+**NOTE:** There is a predefined _RVIZ_ configuration in `rovi2_demo_manager/config/workcell.rviz`, which has default windows to show detection and depth images, as well as relevant frame axes.
 
-device_ip = 192.168.100.2
-callbacl_ip = 192.168.100.25
+- - -
 
-$ roscore
-```
-5. Open new terminal and launch test example:
+## System overview
 
-```sh
-$ roslaunch caros_universalrobot simple_demo_using_move_ptp.test
-```
+![system](doc/rovi2_system.png)
 
-## C. Network connection setup.
+## Packages and classes
 
-#### On the Robot's computer:
-
-Check ROS MASTER URI:
-
-```sh
-$ roscore
-ROS_MASTER_URI=http://<IP>:11311/
-```
-
-IP should be 192.168.100.52 (that of the workcell)
-
-Then, export URI and IP:
-
-```sh
-$ export ROS_MASTER_URI=http://192.168.100.52:11311/
-$ export ROS_IP=192.168.100.52
-```
-
-#### On the laptop:
-
-Export URI and IP (THIS HAS TO BE DONE FOR ANY NEW TERMINAL USED TO RUN ROS COMMANDS)
-
-```sh
-$ export ROS_MASTER_URI=http://192.168.100.52:11311/
-$ export ROS_IP=192.168.100.25
-```
-
-## D. Stereo Camera Connection.
-
-Installing the camera driver:
-
-```sh
-$ sudo apt install ros-kinetic-pointgrey-camera-driver
-```
-
-#### Launching the driver (in the Robot computer):
-
-```sh
-$ source /opt/ros/kinetic/setup.bash
-$ roscore
-```
-
-New terminal
-
-```sh
-$ roslaunch pointgrey_camera_driver bumblebee.launch
-```
-
-#### Visualizing (Robot's computer or any other one in the network):
-
-Run first /rostopic list/ to check if topics launched on Lab computer can be seen in the laptop (URI configuration).
-
-```
-$ rostopic list
-$ rosrun image_view image_view image:=/camera/right/image_raw
-$ rosrun image_view image_view image:=/camera/left/image_raw
-```
-
-## E. USAGE.
-
-The following sections describe the main architecture of the application, each node's functionality and how to use each of them.
-
-### 1. CAROS UNIVERSALROBOT.
-
-The main package. Launch the `caros_universalrobot.launch` to activate all the caros nodes, msgs and functionalities on which the Object Avoidance is based. Once all the robot and network connection setup is done, it is the first thing to launch:
-
-```sh
-$ roslaunch caros_universalrobot caros_universalrobot.launch
-```
-
-### 2. UR Caros Example.
-
-Taken from the ROS Lecture exercise and slightly modified. Use it to set the robot in the initial position for the application. Remember to launch `caros_universalrobot.launch` first.
-
-```sh
-$ rosrun ur_caros_example ur_caros_example
-```
-
-### 3. Robot State Monitor.
-
-This node simply subscribes to RobotSate's msgs to constantly monitor the state of the machine. Displays joint configuration, speed and moving status in the screen. To end this node's activity type ctrl+c in the terminal.
-
-```sh
-$ rosrun robot_state_monitoring robot_state_monitoring
-```
-
-### 4. Planner.
-
-The planner node is the main one in charge of path planning and robot motion. Some features to mention about its implementation:
-
- - It is set up as a client of the `/move_servo_q` CAROS service. In order to move the robot, it requests the CAROS interface to do it by sending each configuraton vector Q in the trajectory calculated.
- - It is subscribed to `/robot_state` in order to be able to obtain instant information abour the current configuration state of the UR (needed for replanning).
-
-```sh
-$ rosrun planner planner
-```
-
-### 5. Red Ball Detection.
-
-Several nodes compose this package in which all the vision part is implemented. The sensor used is a BumbleBee 2 stereo camera.
-
- - Stereo Detection (for right and left images).
- - Stereo triangulation of the real world coordinates of the red ball.
- - Kalman Filter for ball's movement prediction.
-
-#### 5.1. Right/Left Stereo Detection.
-
-There are two nodes, one for each camera in the BumbleBee. As seen before, the sensor uses firewire connection, so it as to be plugged to the WorkStation computer. Therefore, before using it, it is required to export ROS MASTER URI and IP (`ROS_pkgs/export_master.sh`) to that of the WorkCell computer (sections C and D). These detectors are subscribed to both `image_raw` topics to get the input stream recorded by the camera. Then, after filtering the image and getting the coordinates of the ball, each of the nodes broadcast them into `red_ball_detection/right_image_coordinates` and `red_ball_detection/left_image_coordinates` topics.
-
-```sh
-$ rosrun stereo_detector_sinistro (left)
-$ rosrun stereo_detector_destro (right)
-```
-
-#### 5.2. Stereo Triangulation
-
-This node subscribes to the topics where detectors are publishing. Then, it calculates the 3D location by triangulating based on camera calibration parameters and pixel coordinates of the ball at both images. The 3D scene location of the ball (x, y, z real coordinates) are broadcasted then in the topic `/red_ball_detection/triangulated_ball_location`.
-
-```sh
-$ rosrun stereo_triangulation
-```
-
-#### 5.3. Kalman Filter
+- `anytime_planning` package.
+  - Class list:
+    - `AnytimePlanning`: Planning class interfacing _Moveit_ to create a pick & place-like loop.
+  - Node list:
+    - `anytime_planning_node`: Main node running `AnytimePlanning` class.
+    - `random_ball_motion_node`: Node to move the red ball randomly around the workspace of the robot.
+- `kalman_tracking_3d` library package.
+  - Class list:
+    - `KalmanTacking3d`: Class interfacing _OpenCV_ kalman class.
+- `perception_avd` package.
+  - Class list:
+    - `common_perception`: Shared library with common utilities to the different detection methods.
+    - `KinectDetection`: Class performing RGB-D detection and pose estimation of the red ball.
+    - `RedBallDetection`: Class performing 2D image detection of the ball.
+    - `Stereopsis`: Class for stereo triangulation and bounding box PnP pose estimation.
+  - Node list:
+    - `kinect_detection_node`: Publishes 3D position of the center of the ball using `KinectDetection` class.
+    - `monocular_node`: Publishes 3D position of the center of the ball as a result of PnP 3D pose estimation.
+    - `red_ball_detection_node`: Publishes ball center and bounding box in image coordinates.
+    - `stereopsis_node`: Publishes 3D position of the center of the ball as a result of stereo triangulation.
+- `rovi2_demo_manager` package. Main running interface of the application. Configuration files (in `YAML` format), as well as `launch` files for all the several nodes of the system are in this packages.
+- `rovi2_msgs` package. Definition of ROS messages:
+  - `boundingBox.msg` and `boundingBoxes.msg` to broadcast image coordinates and labels of bounding boxes detected for red ball(s).
+  - `point2d` and `points2d` to broadcast image coordinates and labels of ball(s) center.
+  -  `point3d` and `points3d` to broadcast 3D position and label of detected red ball(s).
+- `workcell_scene_description` package: URDF files of the components and description of the workcell.
 
 
-#### 5.4. Launch files
-
-Two launch files are added to be able to run the detection nodes all at once and at the same time. One launches all the setup, while the other does not use the Kalman Filter.
-
-```sh
-$ roslaunch red_ball_detection static_detection.launch (no Kalman)
-```

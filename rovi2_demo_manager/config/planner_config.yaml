@@ -1,5 +1,5 @@
 planning_group: manipulator
 collision_topic: kinect/poses
 camera_frame: asus_rgb_optical_frame
-ball_radius: 0.075
+ball_radius: 0.05
 tolerance: 1.25 # multiplies the value of ball_radius
