@@ -17,7 +17,7 @@ Clone and install dependencies
 ```sh
 cd ~
 mkdir -p rovi2_ws/src && cd rovi2_ws/src
-git clone https://github.com/CVEarp/ROVI2_Object_Avoidance.git
+git clone <url>
 
 # Install dependencies via rosinstall and rosdeo
 wstool update
